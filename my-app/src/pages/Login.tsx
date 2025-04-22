@@ -1,7 +1,43 @@
-export default function Login(){
-    return (
-        <div>
-            <h1>Login Page</h1>
+import './Login.css';
+
+export default function Login() {
+  return (
+    <div className="login-container">
+      <div className="login-left">
+        <div className="quote-box">
+          <p className="quote-label">6' pinch</p>
+          <h2 className="quote-title">Come get it</h2>
+          <p className="quote-sub">You worked hard didn’t you</p>
         </div>
-    )
+      </div>
+
+      <div className="login-right">
+        <div className="form-box">
+          <h1 className="form-title">Welcome Back</h1>
+          <p className="form-sub">Enter your email and password to access your account</p>
+
+          <form className="form">
+            <label>Email</label>
+            <input type="email" placeholder="Enter your email" />
+
+            <label>Password</label>
+            <input type="password" placeholder="Enter your password" />
+
+            <div className="form-options">
+              <label>
+                <input type="checkbox" /> Remember me
+              </label>
+              <a href="#">Forgot Password</a>
+            </div>
+
+            <button type="submit">Sign In</button>
+          </form>
+
+          <p className="signup-text">
+            Don’t have an account? <a href="#">Sign Up</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
