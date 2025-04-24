@@ -12,7 +12,7 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    width: 120vh; /* <-- ADD THIS */
+    width: 130vh; /* <-- ADD THIS */
 
   }
   
@@ -83,14 +83,14 @@
   }
   
   .form-options {
-    color: #555;
+    color: #a28b8b;
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
   }
   
   button[type='submit'] {
-    background-color: black;
+    background-color: rgb(0, 0, 0);
     color: white;
     padding: 0.6rem;
     border: none;
@@ -105,3 +105,33 @@
     font-size: 0.9rem;
   }
   
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 1rem;
+  }
+  
+  .form-options input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #b192f2; /* Sets the color of the checkbox when checked */
+    margin-right: 8px;
+  }
+  
+  .form-options label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .form-options a {
+    color: #555;
+    text-decoration: none;
+  }
+  
+  .form-options a:hover {
+    text-decoration: underline;
+  }
