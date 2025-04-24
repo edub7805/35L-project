@@ -1,7 +1,16 @@
 import './Login.css';
 // Maybe make it so the job posting pop up on the side
 
+
+
 export default function Login() {
+
+  const handleSubmit = (): void =>{
+    alert('Sign in Button pressed');
+  }
+  const handleSignUp = (): void =>{
+    alert('Sign up Button pressed');
+  }
   return (
     <div className="login-container">
       <div className="login-left">
@@ -25,17 +34,14 @@ export default function Login() {
             <input type="password" placeholder="Enter your password" />
 
             <div className="form-options">
-              <label>
-                <input type="checkbox" /> Remember me
-              </label>
               <a href="#"></a>
             </div>
 
-            <button type="submit">Sign In</button>
+            <button type="submit" onClick={handleSubmit}>Sign In</button>
           </form>
 
           <p className="signup-text">
-            Don’t have an account? <a href="#">Sign Up</a>
+            Don’t have an account? <a href="#" onClick={handleSignUp}>Sign Up</a>
           </p>
         </div>
       </div>
