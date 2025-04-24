@@ -1,12 +1,13 @@
 import './Login.css';
+// Maybe make it so the job posting pop up on the side
 
 export default function Login() {
   return (
     <div className="login-container">
       <div className="login-left">
         <div className="quote-box">
-          <p className="quote-label">6' pinch</p>
-          <h2 className="quote-title">Come get it</h2>
+          <p className="quote-label">Six'err</p>
+          <h2 className="quote-title">Release your tension</h2>
           <p className="quote-sub">You worked hard didn’t you</p>
         </div>
       </div>
