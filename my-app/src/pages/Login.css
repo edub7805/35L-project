@@ -4,17 +4,41 @@
     font-family: sans-serif;
   }
   
-  .login-left {
-    flex: 1;
-    background: linear-gradient(135deg, #70a0ff, #ffc6d6, #b192f2);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    width: 130vh; /* <-- ADD THIS */
+  /* Login.css */
+.login-left {
+  position: relative;      /* allow absolute children */
+  flex: 1;
+  background: linear-gradient(135deg, #2864da, #ffc6d6, #a079f3);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;        /* hide popups outside */
+  width: 130vh;
+}
 
-  }
+/* job-popup card */
+.job-popup {
+  position: absolute;
+  background-color: rgba(113, 182, 226, 0.4);
+  color: #333;
+  padding: 2rem 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: fade 5s forwards;
+  pointer-events: none;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+/* fade in, pause, fade out */
+@keyframes fade {
+  0%   { opacity: 0; transform: scale(0.8); }
+  10%  { opacity: 1; transform: scale(1); }
+  80%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
   
   .quote-box {
     max-width: 400px;
@@ -76,6 +100,7 @@
   
   input[type='email'],
   input[type='password'] {
+    color: black;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 6px;
