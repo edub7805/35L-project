@@ -1,5 +1,5 @@
-// Login.tsx
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom'; // <-- ADD THIS
 import './Login.css';
 
 type Job = {
@@ -18,6 +18,9 @@ export default function Login() {
   // refs for measuring
   const containerRef = useRef<HTMLDivElement>(null);
   const quoteRef     = useRef<HTMLDivElement>(null);
+
+  const navigate = useNavigate(); // <-- ADD THIS
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -70,7 +73,7 @@ export default function Login() {
     alert('Sign in Button pressed');
   };
   const handleSignUp = () => {
-    alert('Sign up Button pressed');
+    navigate('/signup');
   };
 
   return (
