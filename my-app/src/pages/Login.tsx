@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom'; // <-- ADD THIS
+import { useNavigate } from 'react-router-dom'; 
 import './Login.css';
 
 type Job = {
@@ -19,7 +19,7 @@ export default function Login() {
   const containerRef = useRef<HTMLDivElement>(null);
   const quoteRef     = useRef<HTMLDivElement>(null);
 
-  const navigate = useNavigate(); // <-- ADD THIS
+  const navigate = useNavigate();
 
 
   useEffect(() => {
