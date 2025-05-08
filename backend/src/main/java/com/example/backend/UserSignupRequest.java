@@ -1,4 +1,10 @@
-package com.example.backend;
+//Purpose: Acts as a Data Transfer Object (DTO) for incoming signup requests.
+//
+//Fields: Matches the expected JSON payload with name, email, and password.
+//
+
+
+        package com.example.backend;
 
 public class UserSignupRequest {
     private String name;

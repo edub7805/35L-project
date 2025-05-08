@@ -1,3 +1,7 @@
+//Purpose: The main entry point for the Spring Boot application.
+//
+//		Behavior: Runs the application with SpringApplication.run(...).
+
 package com.example.backend;
 
 import org.springframework.boot.SpringApplication;
