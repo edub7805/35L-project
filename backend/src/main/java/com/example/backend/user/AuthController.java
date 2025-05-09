@@ -5,7 +5,7 @@
 //
 //        If not, it creates a new User object, saves it to MongoDB, and returns a success message
 
-package com.example.backend;
+package com.example.backend.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
