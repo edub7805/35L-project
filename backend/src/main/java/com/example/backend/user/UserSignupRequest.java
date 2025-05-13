@@ -7,6 +7,7 @@
 package com.example.backend.user;
 
 public class UserSignupRequest {
+    private String id;
     private String name;
     private String email;
     private String password;
@@ -14,13 +15,16 @@ public class UserSignupRequest {
     // Constructors
     public UserSignupRequest() {}
 
-    public UserSignupRequest(String name, String email, String password) {
+    public UserSignupRequest(String id, String name, String email, String password) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
     // Getters and setters
+    public String getId() { return id; }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 

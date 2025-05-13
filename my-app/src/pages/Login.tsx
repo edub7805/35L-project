@@ -71,6 +71,7 @@ export default function Login() {
 
   const handleSubmit = () => {
     alert('Sign in Button pressed');
+    navigate('/createpost')
   };
   const handleSignUp = () => {
     navigate('/signup');

@@ -8,7 +8,9 @@
 package com.example.backend.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -19,18 +21,19 @@ public class AuthController {
     private UserRepository userRepository;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody UserSignupRequest request) {
+    public UserResponse signup(@RequestBody UserSignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            return "Email already registered.";
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered.");
         }
 
         User user = new User(
+                
                 request.getName(),
                 request.getEmail(),
                 request.getPassword()
         );
 
-        userRepository.save(user);
-        return "User " + request.getName() + " signed up and saved to MongoDB!";
+        User savedUser = userRepository.save(user);
+        return new UserResponse(savedUser);
     }
 }
