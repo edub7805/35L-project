@@ -14,6 +14,10 @@ function App() {
         
         {/* Signup Page */}
         <Route path="/signup" element={<Signup />} />
+
+        {/* make job post Page*/} 
+        <Route path="/users/user:id/createpost" element={<Signup />} />
+
       </Routes>
     </Router>
   );

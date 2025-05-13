@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import './SignUp.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // <-- Import navigate
+
+
 
 export default function SignUp() {
+  const navigate = useNavigate(); // <-- Initialize
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,12 +34,19 @@ export default function SignUp() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.text(); // Since your backend returns a string
-      alert(result); // Or show in your UI
+      const data = await response.json();
+      const userId = data.id;
+      navigate(`/users/${userId}/createpost`); // ✅ Route to personalized job post creation
+
+
     } catch (error) {
-      console.error('Signup failed:', error);
-      alert('Signup failed. Please try again.');
+    console.error('Signup failed:', error);
+    if (error instanceof Error) {
+      alert('Signup failed: ' + error.message);
+    } else {
+      alert('Signup failed. Please check console.');
     }
+}
   };
 
   return (
