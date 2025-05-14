@@ -17,11 +17,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         {/* make job post Page*/} 
-<<<<<<< HEAD
-        <Route path="/users/user:id/createpost" element={<Signup />} />
-=======
         <Route path="/users/:id/createpost" element={<CreatePost />} />
->>>>>>> create_jobpost
 
       </Routes>
     </Router>

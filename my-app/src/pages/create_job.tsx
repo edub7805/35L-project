@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import './create_job.css';
-=======
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './create_job.css';
@@ -67,4 +62,3 @@ export default function CreateJob() {
     </div>
   );
 }
->>>>>>> create_jobpost
