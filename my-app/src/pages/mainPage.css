@@ -1,4 +1,6 @@
-/* reset */
+/* mainPage.css */
+
+/* 1. Reset */
 * {
   margin: 0;
   padding: 0;
@@ -6,46 +8,59 @@
 }
 html, body, #root {
   height: 100%;
-  background: #fff;
+  background: #ffffff;
   font-family: sans-serif;
 }
 
-/* Page wrapper & top nav */
+/* 2. Color variables */
+:root {
+  --color-text: #333333;           
+  --color-border: #dddddd;         
+  --color-action: #2575fc;         
+  --color-action-hover: #1861d9;   
+  --gradient-accent: linear-gradient(90deg, #6a11cb, #2575fc);
+}
+
+/* 3. Page wrapper & top nav */
 .page-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100vh;     /* lock to viewport */
-  overflow: hidden;  /* prevent outer scrolling */
+  height: 100vh;     
+  overflow: hidden;  
 }
+
 .main-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  background: var(--gradient-accent);
   color: #fff;
 }
+
 .main-nav .logo {
   font-size: 1.5rem;
 }
+
 .nav-button {
   padding: 0.5rem 1rem;
-  background: rgba(255,255,255,0.2);
-  border: 1px solid rgba(255,255,255,0.4);
+  background-color: var(--color-action);
+  border: 1px solid var(--color-action);
   border-radius: 4px;
   color: #fff;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 .nav-button:hover {
-  background: rgba(255,255,255,0.3);
+  background-color: var(--color-action-hover);
+  border-color: var(--color-action-hover);
 }
 
-/* Main content columns */
+/* 4. Main content columns */
 .main-page-container {
   display: flex;
-  flex: 1;           /* take all leftover space under the nav */
-  overflow: hidden;  /* no scroll here either */
+  flex: 1;           
+  overflow: hidden;  
 }
 
 /* LEFT column */
@@ -53,27 +68,54 @@ html, body, #root {
   flex: 4;
   display: flex;
   flex-direction: column;
-  overflow: hidden;  /* prevents this pane from scrolling */
+  overflow: hidden;  
+  /* Sticky sidebar adjustments applied in responsive section */
 }
-/* Gradient banner */
+
+/* Left banner (header + search) */
 .left-banner {
-  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  background: #ffffff;
   padding: 1rem 2rem;
-  color: #fff;
+  border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: 10;
 }
+
 .left-banner h2 {
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
+  position: relative;
+  padding-bottom: 0.25rem;
+  color: var(--color-text);
 }
+.left-banner h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 4px;
+  background: var(--gradient-accent);
+  border-radius: 2px;
+}
+
+/* Search field with icon & focus */
 .left-banner .job-search {
   width: 100%;
-  padding: 0.5rem;
-  border: none;
+  padding: 0.5rem 0.5rem 0.5rem 2rem;  
+  border: 1px solid var(--color-border);
   border-radius: 4px;
+  background: #f7f9fc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23999999' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") no-repeat 8px center;
+  background-size: 16px 16px;
   font-size: 1rem;
+  color: var(--color-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.left-banner .job-search:focus {
+  outline: none;
+  border-color: var(--color-action);
+  box-shadow: 0 0 0 2px rgba(37,117,252,0.2);
 }
 
 /* Scrollable job list */
@@ -82,27 +124,38 @@ html, body, #root {
   overflow-y: auto;
   padding: 1rem;
 }
+
+/* Custom scrollbar for WebKit */
+.job-list::-webkit-scrollbar {
+  width: 8px;
+}
+.job-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+.job-list::-webkit-scrollbar-thumb {
+  background: #cccccc;
+  border-radius: 4px;
+}
+.job-list::-webkit-scrollbar-thumb:hover {
+  background: #bbbbbb;
+}
+
+/* Job cards */
 .job-card {
-  /* 1) Consistent sizing & alignment */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 140px;              /* ensure all cards line up */
-  padding: 1rem;                  /* your existing padding */
-
-  /* 2) Subtle depth */
+  min-height: 140px;
+  padding: 1rem;
   background: #fff;
-  border: 1px solid #e0e0e0;      /* slightly lighter border */
-  border-radius: 8px;             /* 6–8px for that soft corner */
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  /* text */
-  color: #000;
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
-
-/* 3) Hover lift */
 .job-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 16px rgba(0,0,0,0.1);
@@ -116,38 +169,103 @@ html, body, #root {
   align-items: center;
   background: #fff;
 }
+
 .action-box {
+  position: relative;
   text-align: center;
   padding: 2rem;
   width: 300px;
-  border: 1px solid #eee;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  background: #ffffff;
 }
+.action-box::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 6px;
+  background: var(--gradient-accent);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
 .action-title {
   margin-bottom: 0.75rem;
   font-size: 1.4rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: black;
+  color: var(--color-text);
+  position: relative;
+  padding-bottom: 0.25rem;
 }
+.action-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 40px; height: 4px;
+  background: var(--gradient-accent);
+  border-radius: 2px;
+}
+
 .action-sub {
   margin-bottom: 1.5rem;
-  color: black;
+  color: var(--color-text);
 }
-
-
 
 .action-button {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  background-color: #007bff;
+  background-color: var(--color-action);
   color: #fff;
-  border: none;
+  border: 1px solid var(--color-action);
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 .action-button:hover {
-  background-color: #0056b3;
+  background-color: var(--color-action-hover);
+  border-color: var(--color-action-hover);
+}
+
+/* 5. Sticky sidebar & responsive layout */
+
+/* Sticky left pane under the nav (adjust top offset if your nav height differs) */
+.main-left {
+  position: sticky;
+  top: 4rem;                          
+  align-self: flex-start;
+  height: calc(100vh - 4rem);        
+  overflow: hidden;
+}
+
+/* Tablet & below: stack columns vertically */
+@media (max-width: 1024px) {
+  .main-page-container {
+    flex-direction: column;
+  }
+  .main-left {
+    flex: none;
+    width: 100%;
+    order: 1;
+  }
+  .main-right {
+    flex: none;
+    width: 100%;
+    order: 2;
+    margin: 1rem 0;
+  }
+}
+
+/* Large desktop: wider right panel */
+@media (min-width: 1440px) {
+  .main-page-container {
+    gap: 2rem;
+  }
+  .main-right {
+    flex: 1.5;
+    max-width: 400px;
+  }
 }
