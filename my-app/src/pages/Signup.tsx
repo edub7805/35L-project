@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './SignUp.css';
-import { Link, useNavigate } from 'react-router-dom'; // <-- Import navigate
+import { Link, useNavigate } from 'react-router-dom';
 
 
 
 export default function SignUp() {
-  const navigate = useNavigate(); // <-- Initialize
+  const navigate = useNavigate(); 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,7 +36,7 @@ export default function SignUp() {
 
       const data = await response.json();
       const userId = data.id;
-      navigate(`/users/${userId}/createpost`); // ✅ Route to personalized job post creation
+      navigate(`/users/${userId}/createpost`);
 
 
     } catch (error) {
