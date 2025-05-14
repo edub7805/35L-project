@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.Objects;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -37,6 +38,23 @@ public class AuthController {
         return new UserResponse(savedUser);
     }
 
+    @PostMapping("/login")
+    public UserResponse login(@RequestBody UserLoginRequest request) {
+        // Find user by email
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "Invalid email or password."));
+        
+        // Verify password (simple comparison for now, consider using proper encryption in production)
+        if (!Objects.equals(user.getPassword(), request.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "Invalid email or password.");
+        }
+        
+        // Return user details (without password)
+        return new UserResponse(user);
+    }
+
     // new: fetch user by DB id
     @GetMapping("/users/{id}")
     public UserResponse getUser(@PathVariable String id) {
@@ -46,6 +64,4 @@ public class AuthController {
             );
         return new UserResponse(u);
     }
-
-    
 }

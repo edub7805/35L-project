@@ -11,7 +11,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent page refresh
 
     if (password !== confirmPassword) {
@@ -34,10 +34,10 @@ export default function SignUp() {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
-      const userId = data.id;
-      navigate(`/users/${userId}/mainPage`);
-
+      await response.json(); // Just await the response without storing it
+      // Redirect to login page instead of main page
+      alert('Signup successful! Please login with your credentials.');
+      navigate('/login');
 
     } catch (error) {
     console.error('Signup failed:', error);
@@ -55,7 +55,7 @@ export default function SignUp() {
         <div className="quote-box">
           <p className="quote-label">SIX'ERR</p>
           <h2 className="quote-title">Join the Calm</h2>
-          <p className="quote-sub">Let’s start fresh, together</p>
+          <p className="quote-sub">Let's start fresh, together</p>
         </div>
       </div>
 
