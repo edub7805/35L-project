@@ -31,7 +31,7 @@ export default function CreateJob() {
 
   return (
     <div className="create-job-container">
-      <h1>Create a job post for user {id}</h1>
+      {/* <h1>Create a job post for user {id}</h1> */}
       <form onSubmit={handleSubmit} className="create-job-form">
         <p>hiii</p> 
         <label>Job Name</label>

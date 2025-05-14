@@ -1,0 +1,80 @@
+/* reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body, #root {
+  height: 100%;
+  background: #fff;        /* entire page white */
+}
+
+.main-page-container {
+  display: flex;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+/* LEFT column */
+.main-left {
+  flex: 2;
+  padding: 1rem;
+  background: #f9f9f9;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+}
+
+.job-card {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  color: #000;            /* force black text */
+}
+
+/* RIGHT column */
+.main-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;       /* entire right half white */
+}
+
+.action-box {
+  text-align: center;
+  padding: 2rem;
+  /* remove the max-width so you see the full white sliver */
+  width: 100%;            
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.action-title {
+  margin-bottom: 0.75rem;
+  font-size: 1.4rem;
+  color: #000;
+}
+
+.action-sub {
+  margin-bottom: 1.5rem;
+  color: #000;
+}
+
+.action-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+  color: #000;
+}

@@ -36,7 +36,7 @@ export default function SignUp() {
 
       const data = await response.json();
       const userId = data.id;
-      navigate(`/users/${userId}/createpost`);
+      navigate(`/users/${userId}/mainPage`);
 
 
     } catch (error) {
