@@ -1,3 +1,4 @@
+// create_job.tsx
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './create_job.css';
@@ -22,43 +23,51 @@ export default function CreateJob() {
 
     console.log('Submitting job:', jobData);
 
-    // You can replace this with a POST request to your backend
-    // e.g., fetch('/api/jobs', { method: 'POST', body: JSON.stringify(jobData), ... })
-
     alert('Job posted!');
-    navigate('/'); // Or redirect somewhere else
+    navigate('/');
   };
 
   return (
-    <div className="create-job-container">
-      <h1>Create a job post for user {id}</h1>
-      <form onSubmit={handleSubmit} className="create-job-form">
-        <p>hiii</p> 
-        <label>Job Name</label>
-        <input
-          type="text"
-          value={jobName}
-          onChange={(e) => setJobName(e.target.value)}
-          placeholder="Enter job title"
-        />
+    <div className="createjob-wrapper">
+      <div className="createjob-background"></div>
+      <div className="createjob-overlay">
+        <h1 className="form-title">Post a Gig!</h1>
+        <form className="form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="jobName">Job Name</label>
+            <input
+              id="jobName"
+              type="text"
+              value={jobName}
+              onChange={(e) => setJobName(e.target.value)}
+              placeholder="Enter job title"
+            />
+          </div>
 
-        <label>Time</label>
-        <input
-          type="text"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          placeholder="e.g. 2 PM - 5 PM"
-        />
+          <div className="form-group">
+            <label htmlFor="time">Time</label>
+            <input
+              id="time"
+              type="text"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              placeholder="e.g. 2 PM - 5 PM"
+            />
+          </div>
 
-        <label>Description</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Describe the job in detail"
-        ></textarea>
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe the job"
+            ></textarea>
+          </div>
 
-        <button type="submit">Post Job</button>
-      </form>
+          <button type="submit">Post</button>
+        </form>
+      </div>
     </div>
   );
 }

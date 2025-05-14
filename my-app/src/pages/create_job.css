@@ -1,42 +1,106 @@
-.create-job-container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fefefe;
+/* create_job.css */
+.createjob-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #8cc0ff, #a385ee,rgb(214, 164, 172));
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;  font-family: sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
-.create-job-form {
+.createjob-background {
+  position: absolute;
+  inset: 0;
+  background: url('/sixerr-bg.png') repeat;
+  background-size: 100%;
+  opacity: .2; /* Controls the background image transparency */
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.createjob-overlay {
+  background-color: white;
+  padding: 2rem;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: float 3s ease-in-out infinite;
+}
+
+.form-title {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.form-group {
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.create-job-form label {
-  margin-top: 1rem;
-  font-weight: bold;
+input[type='text'],
+textarea {
+  padding: 0.7rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f4f0fb;
+  width: 100%;
+  box-sizing: border-box;
+  color: black;
 }
 
-.create-job-form input,
-.create-job-form textarea {
+textarea {
+  resize: vertical;
+  max-height: 150px;
+}
+
+button[type='submit'] {
   padding: 0.5rem;
-  margin-top: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #aaa;
-  border-radius: 4px;
-}
-
-.create-job-form textarea {
-  min-height: 100px;
-}
-
-.create-job-form button {
-  margin-top: 1.5rem;
-  padding: .75rem;
-  font-size: 1rem;
-  background-color: #0077ff;
+  background: black;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
+  width: 100%;
+  margin-top: 1rem;
+  box-sizing: border-box;
 }
