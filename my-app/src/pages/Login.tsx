@@ -69,7 +69,8 @@ export default function Login() {
     return () => clearInterval(interval);
   }, [nextIdx, placeholders]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page refresh
     alert('Sign in Button pressed');
     navigate('/createpost')
   };
@@ -102,7 +103,7 @@ export default function Login() {
           <h1 className="form-title">Welcome Back</h1>
           <p className="form-sub">Enter your email and password to access your account</p>
 
-          <form className="form" onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
+          <form className="form" onSubmit={ handleSubmit }>
             <label>Email</label>
             <input type="email" placeholder="Enter your email" />
 
