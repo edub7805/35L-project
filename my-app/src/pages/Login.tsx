@@ -14,6 +14,8 @@ export default function Login() {
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [nextIdx, setNextIdx] = useState(0);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   // refs for measuring
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,10 +71,48 @@ export default function Login() {
     return () => clearInterval(interval);
   }, [nextIdx, placeholders]);
 
-  const handleSubmit = () => {
-    alert('Sign in Button pressed');
-    navigate('/createpost')
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (!email || !password) {
+      alert('Please enter both email and password.');
+      return;
+    }
+    
+    const payload = {
+      email: email,
+      password: password,
+    };
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Login failed. Please check your credentials.');
+      }
+      
+      const data = await response.json();
+      const userId = data.id;
+      
+      // Navigate to the main page with the user ID
+      navigate(`/users/${userId}/mainPage`);
+      
+    } catch (error) {
+      console.error('Login failed:', error);
+      if (error instanceof Error) {
+        alert('Login failed: ' + error.message);
+      } else {
+        alert('Login failed. Please check your credentials.');
+      }
+    }
   };
+  
   const handleSignUp = () => {
     navigate('/signup');
   };
@@ -83,7 +123,7 @@ export default function Login() {
         <div className="quote-box" ref={quoteRef}>
           <p className="quote-label">Six'err</p>
           <h2 className="quote-title">Release your tension</h2>
-          <p className="quote-sub">You worked hard didn’t you</p>
+          <p className="quote-sub">You worked hard didn't you</p>
         </div>
 
         {jobs.map(({ id, text, top, left }) => (
@@ -102,12 +142,22 @@ export default function Login() {
           <h1 className="form-title">Welcome Back</h1>
           <p className="form-sub">Enter your email and password to access your account</p>
 
-          <form className="form" onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
+          <form className="form" onSubmit={handleSubmit}>
             <label>Email</label>
-            <input type="email" placeholder="Enter your email" />
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
 
             <label>Password</label>
-            <input type="password" placeholder="Enter your password" />
+            <input 
+              type="password" 
+              placeholder="Enter your password" 
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
 
             <div className="form-options">
               <label><input type="checkbox" /> Remember me</label>
@@ -118,7 +168,7 @@ export default function Login() {
           </form>
 
           <p className="signup-text">
-            Don’t have an account? <a href="#" onClick={handleSignUp}>Sign Up</a>
+            Don't have an account? <a href="#" onClick={handleSignUp}>Sign Up</a>
           </p>
         </div>
       </div>

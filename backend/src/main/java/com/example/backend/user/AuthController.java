@@ -11,8 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.Objects;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
@@ -35,5 +36,32 @@ public class AuthController {
 
         User savedUser = userRepository.save(user);
         return new UserResponse(savedUser);
+    }
+
+    @PostMapping("/login")
+    public UserResponse login(@RequestBody UserLoginRequest request) {
+        // Find user by email
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "Invalid email or password."));
+        
+        // Verify password (simple comparison for now, consider using proper encryption in production)
+        if (!Objects.equals(user.getPassword(), request.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "Invalid email or password.");
+        }
+        
+        // Return user details (without password)
+        return new UserResponse(user);
+    }
+
+    // new: fetch user by DB id
+    @GetMapping("/users/{id}")
+    public UserResponse getUser(@PathVariable String id) {
+        User u = userRepository.findById(id)
+            .orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+            );
+        return new UserResponse(u);
     }
 }

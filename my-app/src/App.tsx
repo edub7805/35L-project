@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import CreatePost from './pages/create_job'
+import MainPage from './pages/mainPage'
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
 
         {/* make job post Page*/} 
         <Route path="/users/:id/createpost" element={<CreatePost />} />
+
+        {/* main page*/} 
+        <Route path="/users/:id/mainPage" element={<MainPage />} />
 
       </Routes>
     </Router>
