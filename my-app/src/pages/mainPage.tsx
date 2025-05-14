@@ -18,24 +18,15 @@ export default function MainPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>('');
+  const [search, setSearch]     = useState<string>('');
 
-  // Fetch user info on mount
+  // fetch user name...
   useEffect(() => {
     if (!id) return;
     fetch(`http://localhost:8080/api/users/${id}`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Failed to fetch user (${res.status})`);
-        }
-        return res.json() as Promise<UserResponse>;
-      })
-      .then(user => {
-        setUsername(user.name);
-      })
-      .catch(err => {
-        console.error(err);
-        setUsername(''); // fallback
-      });
+      .then(r => r.json())
+      .then((u: UserResponse) => setUsername(u.name))
+      .catch(() => setUsername(''));
   }, [id]);
 
   const dummyJobs: Job[] = Array.from({ length: 30 }, (_, i) => ({
@@ -44,6 +35,10 @@ export default function MainPage() {
     description: `This is the description for job ${i + 1}.`,
   }));
 
+  const filtered = dummyJobs.filter(j =>
+    j.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   const handleCreatePost = () => {
     navigate(`/users/${id}/createpost`);
   };
@@ -51,12 +46,24 @@ export default function MainPage() {
   return (
     <div className="main-page-container">
       <div className="main-left">
-        {dummyJobs.map(job => (
-          <div key={job.id} className="job-card">
-            <h3>{job.title}</h3>
-            <p>{job.description}</p>
-          </div>
-        ))}
+        <div className="left-header">
+          <h2>Available Jobs</h2>
+          <input
+            className="job-search"
+            type="text"
+            placeholder="Search jobs…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="job-list">
+          {filtered.map(job => (
+            <div key={job.id} className="job-card">
+              <h3>{job.title}</h3>
+              <p>{job.description}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="main-right">
