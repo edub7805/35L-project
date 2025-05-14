@@ -6,62 +6,106 @@
 }
 html, body, #root {
   height: 100%;
-  background: #fff;        /* entire page white */
-}
-
-.main-page-container {
-  display: flex;
-  height: 100vh;
+  background: #fff;
   font-family: sans-serif;
 }
 
-/* LEFT column */
-
-.main-left {
-  flex: 4;
-  background: #f9f9f9;
-  border-right: 1px solid #ddd;
+/* Page wrapper & top nav */
+.page-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100vh;     /* lock to viewport */
+  overflow: hidden;  /* prevent outer scrolling */
+}
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  color: #fff;
+}
+.main-nav .logo {
+  font-size: 1.5rem;
+}
+.nav-button {
+  padding: 0.5rem 1rem;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.nav-button:hover {
+  background: rgba(255,255,255,0.3);
 }
 
-.left-header {
+/* Main content columns */
+.main-page-container {
+  display: flex;
+  flex: 1;           /* take all leftover space under the nav */
+  overflow: hidden;  /* no scroll here either */
+}
+
+/* LEFT column */
+.main-left {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;  /* prevents this pane from scrolling */
+}
+/* Gradient banner */
+.left-banner {
+  background: linear-gradient(120deg, #6a11cb, #2575fc);
+  padding: 1rem 2rem;
+  color: #fff;
   position: sticky;
   top: 0;
-  background: #f9f9f9;
-  padding: 1rem;
-  border-bottom: 1px solid #ddd;
   z-index: 10;
 }
-
-.left-header h2 {
+.left-banner h2 {
+  font-size: 1.4rem;
   margin-bottom: 0.5rem;
-  font-size: 1.2rem;
-  color: #000;
 }
-
-.job-search {
+.left-banner .job-search {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 4px;
+  font-size: 1rem;
 }
 
+/* Scrollable job list */
 .job-list {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
 }
-
 .job-card {
+  /* 1) Consistent sizing & alignment */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px;              /* ensure all cards line up */
+  padding: 1rem;                  /* your existing padding */
+
+  /* 2) Subtle depth */
   background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #e0e0e0;      /* slightly lighter border */
+  border-radius: 8px;             /* 6–8px for that soft corner */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  /* text */
   color: #000;
+  margin-bottom: 1rem;
+}
+
+/* 3) Hover lift */
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
 
 /* RIGHT column */
@@ -70,45 +114,40 @@ html, body, #root {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #fff;       /* entire right half white */
+  background: #fff;
 }
-
 .action-box {
   text-align: center;
   padding: 2rem;
-  width: 300px;               /* <-- fixed width */
+  width: 300px;
   border: 1px solid #eee;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
-
 .action-title {
   margin-bottom: 0.75rem;
   font-size: 1.4rem;
-  color: #000000;
-
-  width: 100%;                /* fill the 300px container */
-  white-space: nowrap;        /* don’t wrap to a second line */
-  overflow: hidden;           /* cut off excess text */
-  text-overflow: ellipsis;    /* show “…” at the end */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: black;
 }
-
 .action-sub {
   margin-bottom: 1.5rem;
-  color: #000;
+  color: black;
 }
+
+
 
 .action-button {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   background-color: #007bff;
-  color: #000;
+  color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
 }
-
 .action-button:hover {
   background-color: #0056b3;
-  color: #000;
 }
