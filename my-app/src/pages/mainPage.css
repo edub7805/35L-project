@@ -17,8 +17,8 @@ html, body, #root {
 
 /* LEFT column */
 .main-left {
-  flex: 2;
-  padding: 1rem;
+  flex: 4;
+  padding: 6rem;
   background: #f9f9f9;
   overflow-y: auto;
   border-right: 1px solid #ddd;

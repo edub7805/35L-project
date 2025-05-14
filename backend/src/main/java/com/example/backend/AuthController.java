@@ -36,4 +36,16 @@ public class AuthController {
         User savedUser = userRepository.save(user);
         return new UserResponse(savedUser);
     }
+
+    // new: fetch user by DB id
+    @GetMapping("/users/{id}")
+    public UserResponse getUser(@PathVariable String id) {
+        User u = userRepository.findById(id)
+            .orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
+            );
+        return new UserResponse(u);
+    }
+
+    
 }
