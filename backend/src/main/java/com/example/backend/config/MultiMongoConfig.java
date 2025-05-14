@@ -23,7 +23,7 @@ public class MultiMongoConfig {
         // Create a MongoClient from the URI
         ConnectionString connString = new ConnectionString(mongoUri);
         MongoClient client          = MongoClients.create(connString);
-        // Point that client at the "user-db" database
+        // Point that client at the "users-db" database
         return new SimpleMongoClientDatabaseFactory(client, "users-db");
     }
 
