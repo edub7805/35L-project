@@ -9,7 +9,7 @@
 //        Use: Gets saved into the database when a new user signs up.
 
 
-package com.example.backend;
+package com.example.backend.user;
 // user object
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

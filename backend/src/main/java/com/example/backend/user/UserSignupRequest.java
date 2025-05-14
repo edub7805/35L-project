@@ -4,7 +4,7 @@
 //
 
 
-        package com.example.backend;
+package com.example.backend.user;
 
 public class UserSignupRequest {
     private String id;

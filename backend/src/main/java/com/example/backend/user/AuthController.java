@@ -5,14 +5,14 @@
 //
 //        If not, it creates a new User object, saves it to MongoDB, and returns a success message
 
-package com.example.backend;
+package com.example.backend.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
