@@ -2,11 +2,14 @@ import React, { FC, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './mainPage.css';
 
-interface Job {
-  id: number;
-  owner: string;
-  title: string;
+// Match backend JSON shape
+interface JobPost {
+  id: string;
+  userId: string;
+  jobName: string;
+  time: string;
   description: string;
+  createdAt: string;
 }
 
 interface UserResponse {
@@ -23,138 +26,127 @@ interface UserStats {
 }
 
 const MainPage: FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>(); // used only for greeting
   const navigate = useNavigate();
+
+  // UI state
   const [username, setUsername] = useState<string>('');
   const [search, setSearch] = useState<string>('');
-  const [leftPanelWidth, setLeftPanelWidth] = useState<number>(70); // Default 70% width
+  const [jobs, setJobs] = useState<JobPost[]>([]);
+  const [posterNames, setPosterNames] = useState<Record<string, string>>({});
+  const [leftPanelWidth, setLeftPanelWidth] = useState<number>(70);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  
+
   // Refs for resize handling
   const containerRef = useRef<HTMLDivElement>(null);
-  const leftPanelRef = useRef<HTMLDivElement>(null);
   const dividerRef = useRef<HTMLDivElement>(null);
 
-  // Dummy stats data (would come from API in real app)
+  // Dummy stats data (replace with real API)
   const userStats: UserStats = {
     jobsPosted: 5,
     jobsTaken: 12,
     points: 340,
-    rank: 8
+    rank: 8,
   };
 
-  // Fetch username
+  // Fetch username (for greeting)
   useEffect(() => {
     if (!id) return;
     fetch(`http://localhost:8080/api/users/${id}`)
-      .then(r => r.json())
+      .then(res => res.json())
       .then((u: UserResponse) => setUsername(u.name))
-      .catch(() => setUsername(''));
+      .catch(err => {
+        console.error('Failed to load user:', err);
+        setUsername('');
+      });
   }, [id]);
 
-  // Handle divider drag
+  // Fetch all jobs
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/jobs`)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data: JobPost[]) => setJobs(data))
+      .catch(err => {
+        console.error('Failed to load jobs:', err);
+        setJobs([]);
+      });
+  }, []);
+
+  // Fetch poster names for each unique userId
+  useEffect(() => {
+    const uniqueIds = Array.from(new Set(jobs.map(j => j.userId)));
+    Promise.all(
+      uniqueIds.map(uid =>
+        fetch(`http://localhost:8080/api/users/${uid}`)
+          .then(res => res.json())
+          .then((u: UserResponse) => [uid, u.name] as [string, string])
+          .catch(() => [uid, uid] as [string, string])
+      )
+    )
+      .then(entries => setPosterNames(Object.fromEntries(entries)))
+      .catch(err => console.error('Failed to load poster names:', err));
+  }, [jobs]);
+
+  // Filter jobs by search term
+  const filtered = jobs.filter(job =>
+    job.jobName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // Divider drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
 
-  // Handle mouse move for resizing
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    const onMouseMove = (e: MouseEvent) => {
       if (!isDragging || !containerRef.current) return;
-      
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const containerWidth = containerRect.width;
-      const mouseXRelative = e.clientX - containerRect.left;
-      
-      // Calculate percentage width (constrained between 20% and 80%)
-      const newWidthPercent = Math.min(Math.max(
-        (mouseXRelative / containerWidth) * 100, 
-        20), // min width
-        80  // max width
+      const rect = containerRef.current.getBoundingClientRect();
+      const percent = Math.min(
+        Math.max(((e.clientX - rect.left) / rect.width) * 100, 20),
+        80
       );
-      
-      setLeftPanelWidth(newWidthPercent);
+      setLeftPanelWidth(percent);
     };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
+    const onMouseUp = () => setIsDragging(false);
 
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     }
-
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
     };
   }, [isDragging]);
 
-  // Dummy jobs data
-  const dummyJobs: Job[] = Array.from({ length: 30 }, (_, i) => ({
-    id: i,
-    owner: `tempOwner`,
-    title: `Job Title ${i + 1}`,
-    description: `This is the description for job ${i + 1}.`,
-  }));
-  const filtered = dummyJobs.filter(j =>
-    j.title.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const handleCreatePost = () => {
-    navigate(`/users/${id}/createpost`);
-  };
-
-  const handleUserStats = () => {
-    navigate(`/users/${id}/stats`);
-  };
-
-  const handleMyJobs = () => {
-    navigate(`/users/${id}/my-jobs`);
-  };
-
-  const handleLeaderboard = () => {
-    navigate(`/leaderboard`);
-  };
+  // Navigation handlers
+  const handleCreatePost = () => navigate(`/users/${id}/createpost`);
+  const handleUserStats = () => navigate(`/users/${id}/stats`);
+  const handleMyJobs = () => navigate(`/users/${id}/my-jobs`);
+  const handleLeaderboard = () => navigate('/leaderboard');
 
   return (
     <div className="page-wrapper">
-      {/* Top nav / hero */}
       <nav className="main-nav">
-        <div className="logo">
-          {/* swap in your logo SVG or image here */}
-          <strong>Sixxer</strong>
-        </div>
+        <div className="logo"><strong>Sixxer</strong></div>
         <div className="nav-buttons">
-          <button className="nav-button" onClick={handleMyJobs}>
-            My Jobs
-          </button>
-          <button className="nav-button" onClick={handleUserStats}>
-            Stats ({userStats.points} pts)
-          </button>
-          <button className="nav-button" onClick={handleLeaderboard}>
-            Leaderboard
-          </button>
-          <button className="nav-button" onClick={handleCreatePost}>
-            + Create Job
-          </button>
+          <button onClick={handleMyJobs} className="nav-button">My Jobs</button>
+          <button onClick={handleUserStats} className="nav-button">Stats ({userStats.points} pts)</button>
+          <button onClick={handleLeaderboard} className="nav-button">Leaderboard</button>
+          <button onClick={handleCreatePost} className="nav-button">+ Create Job</button>
         </div>
       </nav>
 
-      {/* Two-column layout with resizable panels */}
       <div className="main-page-container" ref={containerRef}>
-        <aside 
-          className="main-left" 
-          ref={leftPanelRef}
-          style={{ flex: `0 0 ${leftPanelWidth}%` }}
-        >
+        <aside className="main-left" style={{ flex: `0 0 ${leftPanelWidth}%` }}>
           <div className="left-banner">
             <h2>Available Jobs</h2>
             <input
               className="job-search"
-              type="text"
               placeholder="Search jobs…"
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -163,40 +155,33 @@ const MainPage: FC = () => {
           <div className="job-list">
             {filtered.map(job => (
               <div key={job.id} className="job-card">
-                <h3>{job.title}</h3>
-                <p>{job.owner}</p>
+                <h3>{job.jobName}</h3>
+                <p>Posted by: {posterNames[job.userId] || job.userId}</p>
                 <p>{job.description}</p>
               </div>
             ))}
+            {filtered.length === 0 && <p>No jobs found.</p>}
           </div>
         </aside>
 
-        {/* Resizable divider */}
-        <div 
-          className={`resizable-divider ${isDragging ? 'dragging' : ''}`}
+        <div
           ref={dividerRef}
+          className={`resizable-divider ${isDragging ? 'dragging' : ''}`}
           onMouseDown={handleMouseDown}
         />
 
         <section className="main-right" style={{ flex: `0 0 ${100 - leftPanelWidth - 1}%` }}>
           <div className="action-box">
-            <h2 className="action-title">
-              Hello, {username || 'User'}!
-            </h2>
+            <h2 className="action-title">Hello, {username || 'User'}!</h2>
             <p className="action-sub">Ready to post a new job?</p>
-            <button className="action-button" onClick={handleCreatePost}>
-              Create Job
-            </button>
-            
+            <button onClick={handleCreatePost} className="action-button">Create Job</button>
             <div className="stats-preview">
               <h3>Your Activity</h3>
               <p>Jobs Posted: {userStats.jobsPosted}</p>
               <p>Jobs Taken: {userStats.jobsTaken}</p>
               <p>Points: {userStats.points}</p>
               <p>Rank: #{userStats.rank}</p>
-              <button className="action-button" onClick={handleUserStats}>
-                View Details
-              </button>
+              <button onClick={handleUserStats} className="action-button">View Details</button>
             </div>
           </div>
         </section>
