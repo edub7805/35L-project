@@ -1,30 +1,46 @@
 // create_job.tsx
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import './create_job.css';
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import "./create_job.css";
 
 export default function CreateJob() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [jobName, setJobName] = useState('');
-  const [time, setTime] = useState('');
-  const [description, setDescription] = useState('');
+  const [jobName, setJobName] = useState("");
+  const [time, setTime] = useState("");
+  const [description, setDescription] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // ② stop the browser reload
     e.preventDefault();
 
-    const jobData = {
-      userId: id,
-      jobName,
-      time,
-      description,
-    };
+    // 1) quick frontend guard
+    if (![jobName, time, description].every((s) => s.trim())) {
+      alert("Please fill in all fields.");
+      return;
+    }
 
-    console.log('Submitting job:', jobData);
+    try {
+      const res = await fetch(`http://localhost:8080/api/users/${id}/jobs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobName, time, description }),
+      });
 
-    alert('Job posted!');
-    navigate(`/users/${id}/mainPage`);
+      const payload = await res.json();
+      if (!res.ok) {
+        // server sent a 4xx/5xx with { message }
+        throw new Error(payload.message || "Server error");
+      }
+
+      console.log("Created job:", payload);
+      console.log("✔️ About to redirect to:", `/users/${id}/mainPage`);
+      navigate(`/users/${id}/mainPage`);
+    } catch (err) {
+      console.error("Failed to submit:", err);
+      alert("Submission failed: " + err.message);
+    }
   };
 
   return (
