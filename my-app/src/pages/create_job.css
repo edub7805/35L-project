@@ -54,12 +54,14 @@
   flex-direction: column;
   align-items: center;
   animation: float 3s ease-in-out infinite;
+  color: #000000;
 }
 
 .form-title {
   text-align: center;
   font-size: 1.5rem;
   margin-bottom: 1rem;
+  color: #000000;
 }
 
 .form {
@@ -73,6 +75,12 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  color: #000000;
+}
+
+.form-group label {
+  color: #000000;
+  margin-bottom: 0.25rem;
 }
 
 input[type='text'],
@@ -103,4 +111,27 @@ button[type='submit'] {
   width: 100%;
   margin-top: 1rem;
   box-sizing: border-box;
+}
+
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+  .createjob-overlay {
+    width: 90%;
+    max-width: 400px;
+    padding: 1.5rem;
+  }
+  
+  .form-title {
+    font-size: 1.3rem;
+  }
+  
+  input[type='text'],
+  textarea {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+  
+  button[type='submit'] {
+    padding: 0.5rem;
+  }
 }

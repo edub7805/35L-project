@@ -3,6 +3,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import CreatePost from './pages/create_job'
 import MainPage from './pages/mainPage'
+import UserStats from './pages/UserStats';
+import Leaderboard from './pages/Leaderboard';
 
 function App() {
   return (
@@ -22,6 +24,15 @@ function App() {
 
         {/* main page*/} 
         <Route path="/users/:id/mainPage" element={<MainPage />} />
+
+        {/* User Statistics Page */}
+        <Route path="/users/:id/stats" element={<UserStats />} />
+
+        {/* My Jobs Page */}
+        <Route path="/users/:id/my-jobs" element={<MainPage />} />
+
+        {/* Leaderboard */}
+        <Route path="/leaderboard" element={<Leaderboard />} />
 
       </Routes>
     </Router>

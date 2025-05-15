@@ -8,25 +8,29 @@
 }
 html, body, #root {
   height: 100%;
+  width: 100%;
   background: #ffffff;
   font-family: sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 /* 2. Color variables */
 :root {
-  --color-text: #333333;           
+  --color-text: #000000;           
   --color-border: #dddddd;         
   --color-action: #2575fc;         
   --color-action-hover: #1861d9;   
   --gradient-accent: linear-gradient(90deg, #6a11cb, #2575fc);
+  --divider-width: 8px;
 }
 
 /* 3. Page wrapper & top nav */
 .page-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100vh;     
-  overflow: hidden;  
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .main-nav {
@@ -36,10 +40,16 @@ html, body, #root {
   padding: 1rem 2rem;
   background: var(--gradient-accent);
   color: #fff;
+  width: 100%;
 }
 
 .main-nav .logo {
   font-size: 1.5rem;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .nav-button {
@@ -59,8 +69,10 @@ html, body, #root {
 /* 4. Main content columns */
 .main-page-container {
   display: flex;
-  flex: 1;           
+  flex: 1;
+  width: 100%;
   overflow: hidden;  
+  position: relative;
 }
 
 /* LEFT column */
@@ -68,8 +80,37 @@ html, body, #root {
   flex: 4;
   display: flex;
   flex-direction: column;
-  overflow: hidden;  
+  overflow: hidden;
+  min-width: 300px;
   /* Sticky sidebar adjustments applied in responsive section */
+}
+
+/* Resizable divider */
+.resizable-divider {
+  width: var(--divider-width);
+  background: var(--color-border);
+  cursor: col-resize;
+  position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.resizable-divider:hover,
+.resizable-divider.dragging {
+  background: var(--color-action);
+}
+
+.resizable-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 30px;
+  background: #fff;
+  border-radius: 1px;
 }
 
 /* Left banner (header + search) */
@@ -122,7 +163,9 @@ html, body, #root {
 .job-list {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1rem;
+  width: 100%;
 }
 
 /* Custom scrollbar for WebKit */
@@ -168,6 +211,7 @@ html, body, #root {
   justify-content: center;
   align-items: center;
   background: #fff;
+  min-width: 250px;
 }
 
 .action-box {
@@ -230,6 +274,39 @@ html, body, #root {
   border-color: var(--color-action-hover);
 }
 
+/* Stats preview section */
+.stats-preview {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.stats-preview h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.stats-preview p {
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text);
+}
+
+.stats-preview p::before {
+  content: "•";
+  color: var(--color-action);
+  margin-right: 0.5rem;
+}
+
+.stats-preview .action-button {
+  margin-top: 1rem;
+  width: 100%;
+}
+
 /* 5. Sticky sidebar & responsive layout */
 
 /* Sticky left pane under the nav (adjust top offset if your nav height differs) */
@@ -245,6 +322,7 @@ html, body, #root {
 @media (max-width: 1024px) {
   .main-page-container {
     flex-direction: column;
+    width: 100%;
   }
   .main-left {
     flex: none;
@@ -263,9 +341,36 @@ html, body, #root {
 @media (min-width: 1440px) {
   .main-page-container {
     gap: 2rem;
+    width: 100%;
   }
   .main-right {
     flex: 1.5;
     max-width: 400px;
+  }
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 768px) {
+  .main-nav {
+    padding: 0.75rem 1rem;
+  }
+  
+  .left-banner {
+    padding: 0.75rem 1rem;
+  }
+  
+  .job-list {
+    padding: 0.75rem;
+  }
+  
+  .job-card {
+    padding: 0.75rem;
+    min-height: 120px;
+  }
+  
+  .action-box {
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 300px;
   }
 }

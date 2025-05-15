@@ -24,7 +24,7 @@ export default function CreateJob() {
     console.log('Submitting job:', jobData);
 
     alert('Job posted!');
-    navigate('/');
+    navigate(`/users/${id}/mainPage`);
   };
 
   return (
