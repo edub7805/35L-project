@@ -1,0 +1,264 @@
+/* UserStats.css */
+.stats-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: sans-serif;
+  color: #000000;
+}
+
+/* Header */
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-button {
+  padding: 0.5rem 1rem;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #000000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: #e8e8e8;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rank-badge {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Stats Overview */
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2575fc;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #000000;
+}
+
+.leaderboard-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaderboard-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* Tabs */
+.stats-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 2rem;
+}
+
+.stats-tabs button {
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #000000;
+  transition: all 0.2s;
+}
+
+.stats-tabs button:hover {
+  color: #2575fc;
+}
+
+.stats-tabs button.active {
+  color: #2575fc;
+  border-bottom-color: #2575fc;
+  font-weight: bold;
+}
+
+/* Content */
+.stats-content {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 2rem;
+}
+
+.jobs-list h3, 
+.points-history h3 {
+  margin-bottom: 1.5rem;
+  color: #000000;
+}
+
+/* Table */
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stats-table th {
+  text-align: left;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-bottom: 2px solid #e0e0e0;
+  color: #000000;
+  font-weight: bold;
+}
+
+.stats-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  color: #000000;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.status-badge.posted {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.status-badge.taken {
+  background-color: #fff7e6;
+  color: #fa8c16;
+}
+
+.status-badge.completed {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+/* Points History */
+.points-summary {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.points-summary p {
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  color: #000000;
+}
+
+.points-explanation {
+  background: #f0f7ff;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.points-explanation h4 {
+  margin-bottom: 1rem;
+  color: #2575fc;
+}
+
+.points-explanation ul {
+  padding-left: 1.5rem;
+  color: #000000;
+}
+
+.points-explanation li {
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-page {
+    padding: 1rem;
+  }
+  
+  .stats-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .stats-overview {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-tabs {
+    flex-direction: column;
+    border-bottom: none;
+  }
+  
+  .stats-tabs button {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stats-content {
+    padding: 1rem;
+  }
+  
+  .stats-table {
+    display: block;
+    overflow-x: auto;
+  }
+} 

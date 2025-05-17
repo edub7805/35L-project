@@ -46,7 +46,7 @@ public class MultiMongoConfig {
     public MongoDatabaseFactory postDbFactory() {
         ConnectionString connString = new ConnectionString(mongoUri);
         MongoClient client          = MongoClients.create(connString);
-        return new SimpleMongoClientDatabaseFactory(client, "posts-db");
+        return new SimpleMongoClientDatabaseFactory(client, "jobposts-db");
     }
 
     @Bean
@@ -56,7 +56,7 @@ public class MultiMongoConfig {
 
     @Configuration
     @EnableMongoRepositories(
-            basePackages     = "com.example.backend.post",
+            basePackages     = "com.example.backend.jobpost",
             mongoTemplateRef = "postMongoTemplate"
     )
     static class PostDbReposConfig {}

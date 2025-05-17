@@ -1,64 +1,89 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import './create_job.css';
+// create_job.tsx
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import "./create_job.css";
 
 export default function CreateJob() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [jobName, setJobName] = useState('');
-  const [time, setTime] = useState('');
-  const [description, setDescription] = useState('');
+  const [jobName, setJobName] = useState("");
+  const [time, setTime] = useState("");
+  const [description, setDescription] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // ② stop the browser reload
     e.preventDefault();
 
-    const jobData = {
-      userId: id,
-      jobName,
-      time,
-      description,
-    };
+    // 1) quick frontend guard
+    if (![jobName, time, description].every((s) => s.trim())) {
+      alert("Please fill in all fields.");
+      return;
+    }
 
-    console.log('Submitting job:', jobData);
+    try {
+      const res = await fetch(`http://localhost:8080/api/users/${id}/jobs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobName, time, description }),
+      });
 
-    // You can replace this with a POST request to your backend
-    // e.g., fetch('/api/jobs', { method: 'POST', body: JSON.stringify(jobData), ... })
+      const payload = await res.json();
+      if (!res.ok) {
+        // server sent a 4xx/5xx with { message }
+        throw new Error(payload.message || "Server error");
+      }
 
-    alert('Job posted!');
-    navigate('/'); // Or redirect somewhere else
+      console.log("Created job:", payload);
+      console.log("✔️ About to redirect to:", `/users/${id}/mainPage`);
+      navigate(`/users/${id}/mainPage`);
+    } catch (err) {
+      console.error("Failed to submit:", err);
+      alert("Submission failed: " + err.message);
+    }
   };
 
   return (
-    <div className="create-job-container">
-      <h1>Create a job post for user {id}</h1>
-      <form onSubmit={handleSubmit} className="create-job-form">
-        <p>hiii</p> 
-        <label>Job Name</label>
-        <input
-          type="text"
-          value={jobName}
-          onChange={(e) => setJobName(e.target.value)}
-          placeholder="Enter job title"
-        />
+    <div className="createjob-wrapper">
+      <div className="createjob-background"></div>
+      <div className="createjob-overlay">
+        <h1 className="form-title">Post a Gig!</h1>
+        <form className="form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="jobName">Job Name</label>
+            <input
+              id="jobName"
+              type="text"
+              value={jobName}
+              onChange={(e) => setJobName(e.target.value)}
+              placeholder="Enter job title"
+            />
+          </div>
 
-        <label>Time</label>
-        <input
-          type="text"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          placeholder="e.g. 2 PM - 5 PM"
-        />
+          <div className="form-group">
+            <label htmlFor="time">Time</label>
+            <input
+              id="time"
+              type="text"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              placeholder="e.g. 2 PM - 5 PM"
+            />
+          </div>
 
-        <label>Description</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Describe the job in detail"
-        ></textarea>
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe the job"
+            ></textarea>
+          </div>
 
-        <button type="submit">Post Job</button>
-      </form>
+          <button type="submit">Post</button>
+        </form>
+      </div>
     </div>
   );
 }
