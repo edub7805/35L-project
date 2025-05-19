@@ -2,6 +2,8 @@ package com.example.backend.jobpost;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -20,6 +22,14 @@ public class JobPostService {
         post.setCreatedAt(Instant.now());
         post.setUpdatedAt(Instant.now());
         return repo.save(post);
+    }
+
+    public List<JobPost> findAll() {
+        return repo.findAll();
+    }
+    // pass in the object JobPostStatus defined in JobPostStatus.org
+    public List<JobPost> findByStatus(JobPostStatus status) {
+        return repo.findByStatus(status);
     }
 
     public List<JobPost> findByUser(String userId) {

@@ -14,6 +14,16 @@ public class JobPostController {
     private final JobPostService service;
     public JobPostController(JobPostService service) { this.service = service; }
 
+    @GetMapping("/jobs")
+    public List<JobPost> listByStatus(
+            @RequestParam(required = false) JobPostStatus status
+    ) {
+        if (status != null) {
+            return service.findByStatus(status);
+        }
+        return service.findAll();
+    }
+    
     @PostMapping("/users/{userId}/jobs")
     @ResponseStatus(HttpStatus.CREATED)
     public JobPost create(

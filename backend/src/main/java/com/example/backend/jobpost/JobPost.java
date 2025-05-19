@@ -14,7 +14,7 @@ public class JobPost {
     private String description;
 
     private String assignedUserId;  // buyer/customer
-    private JobPostStatus status = JobPostStatus.DRAFT;
+    private JobPostStatus status = JobPostStatus.OPEN;
 
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
