@@ -12,13 +12,19 @@ public class JobPost {
     private String jobName;
     private String time;
     private String description;
-    private Instant createdAt = Instant.now();
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    private String assignedUserId;  // buyer/customer
+    private JobPostStatus status = JobPostStatus.DRAFT;
+
+    private Instant createdAt = Instant.now();
+    private Instant updatedAt = Instant.now();
+    private Instant completedAt;
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     public String getJobName() { return jobName; }
     public void setJobName(String jobName) { this.jobName = jobName; }
@@ -29,7 +35,19 @@ public class JobPost {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
+    public String getAssignedUserId() { return assignedUserId; }
+    public void setAssignedUserId(String assignedUserId) { this.assignedUserId = assignedUserId; }
+
+    public JobPostStatus getStatus() { return status; }
+    public void setStatus(JobPostStatus status) { this.status = status; }
+
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+
+    public Instant getCompletedAt() { return completedAt; }
+    public void setCompletedAt(Instant completedAt) { this.completedAt = completedAt; }
     // constructors, getters/setters...
 }
