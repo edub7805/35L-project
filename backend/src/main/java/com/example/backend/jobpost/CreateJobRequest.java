@@ -25,7 +25,6 @@ public class CreateJobRequest {
     public String getJobName() {
         return jobName;
     }
-
     public void setJobName(String jobName) {
         this.jobName = jobName;
     }
@@ -33,7 +32,6 @@ public class CreateJobRequest {
     public String getTime() {
         return time;
     }
-
     public void setTime(String time) {
         this.time = time;
     }
@@ -41,7 +39,6 @@ public class CreateJobRequest {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }

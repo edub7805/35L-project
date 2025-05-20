@@ -2,6 +2,9 @@ import React, { FC, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './mainPage.css';
 
+//define a type for the status of jobpost from backend
+type JobPostStatus = 
+  'DRAFT' | 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
 // Match backend JSON shape
 interface JobPost {
   id: string;
@@ -10,6 +13,7 @@ interface JobPost {
   time: string;
   description: string;
   createdAt: string;
+  status : JobPostStatus; // of type 
 }
 
 interface UserResponse {
@@ -63,7 +67,7 @@ const MainPage: FC = () => {
 
   // Fetch all jobs
   useEffect(() => {
-    fetch(`http://localhost:8080/api/jobs`)
+    fetch(`http://localhost:8080/api/jobs?status=OPEN`)
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
