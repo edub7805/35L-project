@@ -44,5 +44,14 @@ public class JobPostController {
         return service.getById(jobId);
     }
 
+    @PutMapping("/jobs/{jobId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void pickUpJob(
+            @PathVariable String jobId,
+            @RequestParam String userId
+    ) {
+        service.pickUpJob(jobId, userId);
+    }
+
     // you could add PUT /jobs/{jobId}, DELETE /jobs/{jobId}, etc.
 }

@@ -101,8 +101,25 @@ const MainPage: FC = () => {
 
   // Divider drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
+      e.preventDefault();
+      setIsDragging(true);
+    };
+    const handlePickUp = (jobId: string, ownerId: string) => {
+    if (!id) return alert("Missing user ID.");
+    if (id == ownerId) return alert("Cant pick up your own job doofus");
+    fetch(`http://localhost:8080/api/jobs/${jobId}?userId=${id}`, {
+      method: 'PUT'
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to pick up job");
+        alert("Successfully picked up job!");
+        // Optionally refetch job list:
+        setJobs(prev => prev.filter(j => j.id !== jobId));
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error picking up job.");
+      });
   };
 
   useEffect(() => {
@@ -132,6 +149,7 @@ const MainPage: FC = () => {
   const handleUserStats = () => navigate(`/users/${id}/stats`);
   const handleMyJobs = () => navigate(`/users/${id}/my-jobs`);
   const handleLeaderboard = () => navigate('/leaderboard');
+  //const 
 
   return (
     <div className="page-wrapper">
@@ -159,7 +177,19 @@ const MainPage: FC = () => {
           <div className="job-list">
             {filtered.map(job => (
               <div key={job.id} className="job-card">
-                <h3>{job.jobName}</h3>
+                <h3
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  {job.jobName}
+                  <button
+                    onClick={() => handlePickUp(job.id, job.userId)}
+                    className="nav-button">Pick Up</button>
+                </h3>
+                
                 <p>Posted by: {posterNames[job.userId] || job.userId}</p>
                 <p>{job.description}</p>
               </div>

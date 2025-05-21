@@ -20,6 +20,8 @@ public class JobPost {
     private Instant updatedAt = Instant.now();
     private Instant completedAt;
 
+    private String assignedTo;
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -49,5 +51,8 @@ public class JobPost {
 
     public Instant getCompletedAt() { return completedAt; }
     public void setCompletedAt(Instant completedAt) { this.completedAt = completedAt; }
+
+    
+    public void setAssignedTo(String userId) { this.assignedTo = userId; }
     // constructors, getters/setters...
 }

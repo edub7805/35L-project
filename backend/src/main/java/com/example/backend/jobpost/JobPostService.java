@@ -1,8 +1,10 @@
 package com.example.backend.jobpost;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
+import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
 import java.util.List;
@@ -61,4 +63,12 @@ public class JobPostService {
         post.setUpdatedAt(Instant.now());
         return repo.save(post);
     }
+
+    public JobPost pickUpJob(String jobId, String userId) {
+        JobPost job = repo.findById(jobId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        job.setStatus(JobPostStatus.IN_PROGRESS);
+        job.setAssignedTo(userId);
+        return repo.save(job);
+        }
 }
