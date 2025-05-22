@@ -7,6 +7,10 @@
 
 package com.example.backend.user;
 
+import com.example.backend.UserResponse;
+import com.example.backend.user.User;
+import com.example.backend.user.UserSignupRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
