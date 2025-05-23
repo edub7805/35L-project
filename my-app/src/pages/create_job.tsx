@@ -8,36 +8,40 @@ export default function CreateJob() {
   const navigate = useNavigate();
 
   const [jobName, setJobName] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("normal");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // ② stop the browser reload
     e.preventDefault();
 
-    // 1) quick frontend guard
-    if (![jobName, time, description].every((s) => s.trim())) {
-      alert("Please fill in all fields.");
+    if (!startTime || !endTime) {
+      alert("Please select both start and end times.");
       return;
     }
-
+    if (!date) {
+      alert("Please select a date.");
+      return;
+    }
+    const time = `${startTime} - ${endTime}`;
+    if (![jobName, time, description].every((s) => s.trim())) {
+      alert("Please fill in all required fields.");
+      return;
+    }
     try {
       const res = await fetch(`http://localhost:8080/api/users/${id}/jobs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobName, time, description }),
+        body: JSON.stringify({ jobName, time, date, description, status }),
       });
-
       const payload = await res.json();
       if (!res.ok) {
-        // server sent a 4xx/5xx with { message }
         throw new Error(payload.message || "Server error");
       }
-
-      console.log("Created job:", payload);
-      console.log("✔️ About to redirect to:", `/users/${id}/mainPage`);
       navigate(`/users/${id}/mainPage`);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to submit:", err);
       alert("Submission failed: " + err.message);
     }
@@ -59,18 +63,53 @@ export default function CreateJob() {
               placeholder="Enter job title"
             />
           </div>
-
           <div className="form-group">
-            <label htmlFor="time">Time</label>
+            <label htmlFor="date">Date</label>
             <input
-              id="time"
-              type="text"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              placeholder="e.g. 2 PM - 5 PM"
+              id="date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
             />
           </div>
-
+          <div className="form-group">
+            <label htmlFor="time">Time</label>
+            <div className="time-inputs">
+              <div className="time-input-group">
+                <label htmlFor="startTime">Start Time</label>
+                <input
+                  id="startTime"
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="time-input-group">
+                <label htmlFor="endTime">End Time</label>
+                <input
+                  id="endTime"
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="status">Job Status</label>
+            <select
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="normal">Normal</option>
+              <option value="urgent">Urgent</option>
+              <option value="flexible">Flexible</option>
+            </select>
+          </div>
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea
@@ -80,8 +119,12 @@ export default function CreateJob() {
               placeholder="Describe the job"
             ></textarea>
           </div>
-
-          <button type="submit">Post</button>
+          <div className="button-group">
+            <button type="button" onClick={() => navigate(`/users/${id}/mainPage`)} className="cancel-button">
+              Cancel
+            </button>
+            <button type="submit">Post</button>
+          </div>
         </form>
       </div>
     </div>

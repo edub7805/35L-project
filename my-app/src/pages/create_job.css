@@ -46,7 +46,7 @@
 .createjob-overlay {
   background-color: white;
   padding: 2rem;
-  width: 400px;
+  width: 500px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 2;
@@ -55,6 +55,8 @@
   align-items: center;
   animation: float 3s ease-in-out infinite;
   color: #000000;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .form-title {
@@ -117,7 +119,7 @@ button[type='submit'] {
 @media (max-width: 768px) {
   .createjob-overlay {
     width: 90%;
-    max-width: 400px;
+    max-width: 500px;
     padding: 1.5rem;
   }
   
@@ -134,4 +136,173 @@ button[type='submit'] {
   button[type='submit'] {
     padding: 0.5rem;
   }
+}
+
+.time-inputs {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.time-input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.time-input-group label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.time-input-group input[type="time"] {
+  padding: 0.7rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f4f0fb;
+  width: 100%;
+  box-sizing: border-box;
+  color: black;
+  cursor: text;
+}
+
+.time-input-group input[type="time"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Style the time input's calendar icon */
+.time-input-group input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 0.2rem;
+  filter: invert(0.5);
+  background-color: transparent;
+}
+
+.time-input-group input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  filter: invert(0.3);
+}
+
+/* Date input styles */
+input[type="date"] {
+  padding: 0.7rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f4f0fb;
+  width: 100%;
+  box-sizing: border-box;
+  color: black;
+  cursor: pointer;
+}
+
+input[type="date"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Select dropdown styles */
+select {
+  padding: 0.7rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f4f0fb;
+  width: 100%;
+  box-sizing: border-box;
+  color: black;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1em;
+}
+
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Checkbox group styles */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  cursor: pointer;
+  accent-color: #007bff;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Add scrollbar styles */
+.createjob-overlay::-webkit-scrollbar {
+  width: 8px;
+}
+
+.createjob-overlay::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.createjob-overlay::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.createjob-overlay::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 0.7rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.button-group button[type="submit"] {
+  background: black;
+  color: white;
+}
+
+.button-group .cancel-button {
+  background: #f4f0fb;
+  color: #666;
+  border: 1px solid #ccc;
+}
+
+.button-group .cancel-button:hover {
+  background: #e8e3f5;
+}
+
+.button-group button[type="submit"]:hover {
+  background: #333;
 }
