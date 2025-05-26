@@ -2,18 +2,20 @@ package com.example.backend.jobpost;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
 import org.springframework.http.HttpStatus;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import java.time.Instant;
 import java.util.List;
 
 @Service
 public class JobPostService {
+
     @Autowired
     private JobPostRepository repo;
 
+    /**
+     * Create a new job post for the given user.
+     */
     public JobPost create(String userId, CreateJobRequest dto) {
         JobPost post = new JobPost();
         post.setUserId(userId);
@@ -26,36 +28,58 @@ public class JobPostService {
         return repo.save(post);
     }
 
+    /**
+     * Retrieve all job posts.
+     */
     public List<JobPost> findAll() {
         return repo.findAll();
     }
-    // pass in the object JobPostStatus defined in JobPostStatus.org
+
+    /**
+     * Retrieve jobs by status.
+     */
     public List<JobPost> findByStatus(JobPostStatus status) {
         return repo.findByStatus(status);
     }
 
-    public List<JobPost> findByUser(String userId) {
-        return repo.findByUserIdAndStatusIn(userId,
-                List.of(JobPostStatus.DRAFT, JobPostStatus.OPEN, JobPostStatus.IN_PROGRESS, JobPostStatus.COMPLETED));
+    /**
+     * Retrieve jobs posted by a specific user, filtered by given statuses.
+     */
+    public List<JobPost> findByUserIdAndStatuses(String userId, List<JobPostStatus> statuses) {
+        return repo.findByUserIdAndStatusIn(userId, statuses);
     }
 
+    /**
+     * Retrieve jobs assigned to a specific user, filtered by given statuses.
+     */
+    public List<JobPost> findByAssignedUserIdAndStatuses(String assignedUserId, List<JobPostStatus> statuses) {
+        return repo.findByAssignedUserIdAndStatusIn(assignedUserId, statuses);
+    }
+
+    /**
+     * Get a job post by ID, or throw 404 if not found.
+     */
     public JobPost getById(String id) {
         return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Job not found: " + id));
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Job not found: " + id
+            ));
     }
 
-    public List<JobPost> getPublic() {
-        return repo.findByStatus(JobPostStatus.OPEN);
+    /**
+     * Pick up a job: set assignedUserId, mark in-progress, update timestamp.
+     */
+    public JobPost pickUpJob(String jobId, String userId) {
+        JobPost job = getById(jobId);
+        job.setAssignedUserId(userId);
+        job.setStatus(JobPostStatus.IN_PROGRESS);
+        job.setUpdatedAt(Instant.now());
+        return repo.save(job);
     }
 
-    public JobPost assign(String id, String buyerId) {
-        JobPost post = getById(id);
-        post.setAssignedUserId(buyerId);
-        post.setStatus(JobPostStatus.IN_PROGRESS);
-        post.setUpdatedAt(Instant.now());
-        return repo.save(post);
-    }
-
+    /**
+     * Mark a job as completed.
+     */
     public JobPost complete(String id) {
         JobPost post = getById(id);
         post.setStatus(JobPostStatus.COMPLETED);
@@ -63,12 +87,4 @@ public class JobPostService {
         post.setUpdatedAt(Instant.now());
         return repo.save(post);
     }
-
-    public JobPost pickUpJob(String jobId, String userId) {
-        JobPost job = repo.findById(jobId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        job.setStatus(JobPostStatus.IN_PROGRESS);
-        job.setAssignedTo(userId);
-        return repo.save(job);
-        }
 }
