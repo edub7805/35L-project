@@ -61,3 +61,79 @@
   background-color: var(--color-action-hover);
   border-color: var(--color-action-hover);
 }
+
+/* Message‐modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* The white modal box */
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+/* Header */
+.modal-content h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+/* Scrollable message list */
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  color : black;
+}
+
+/* Individual message bubbles */
+.message-item {
+  margin: 0.5rem 0;
+}
+.message-item strong {
+  margin-right: 0.25rem;
+}
+
+/* Textarea for new message */
+.message-input {
+  width: 100%;
+  resize: none;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Send button */
+.send-button {
+  align-self: flex-end;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-action);
+  color: #fff;
+  border: 1px solid var(--color-action);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.send-button:hover {
+  background-color: var(--color-action-hover);
+  border-color: var(--color-action-hover);
+}

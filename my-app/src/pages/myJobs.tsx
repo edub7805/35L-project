@@ -13,15 +13,27 @@ type JobPostStatus =
 interface JobPost {
   id: string;
   userId: string;
-  assignedUserId?: string;      // buyer/customer, optional
+  assignedUserId?: string;
   jobName: string;
   description: string;
   status: JobPostStatus;
 }
 
-interface UserResponse {
+interface ConversationContent {
+  messageId: string;
+  senderId: string;
+  content: string;
+  timestamp: string;
+}
+
+interface Conversation {
   id: string;
-  name: string;
+  jobId: string;
+  participants: string[];
+  messages: ConversationContent[];
+  lastMessageAt: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function MyJobs() {
@@ -33,76 +45,71 @@ export default function MyJobs() {
   const [outgoingJobs, setOutgoingJobs] = useState<JobPost[]>([]);
   const [posterNames, setPosterNames] = useState<Record<string, string>>({});
 
-  // Fetch jobs the user picked up: filter by assignedUserId on backend and ensure match
+  // Messaging state
+  const [modalJob, setModalJob] = useState<JobPost | null>(null);
+  const [conversation, setConversation] = useState<Conversation | null>(null);
+  const [messages, setMessages] = useState<ConversationContent[]>([]);
+  const [newMessage, setNewMessage] = useState<string>('');
+
+  // Fetch picked-up jobs
   useEffect(() => {
     if (!id) return;
     fetch(`http://localhost:8080/api/users/${id}/assigned-jobs`)
       .then(res => res.json())
-      .then((data: JobPost[]) => {
-        // Fallback filter in case backend returns more
-        const filtered = data.filter(job => job.assignedUserId === id);
-        setPickedJobs(filtered);
-      })
-      .catch(err => {
-        console.error('Failed to load picked-up jobs:', err);
-        setPickedJobs([]);
-      });
+      .then(setPickedJobs)
+      .catch(() => setPickedJobs([]));
   }, [id]);
 
-  // Fetch jobs the user posted: filter by userId on backend and ensure match
+  // Fetch outgoing jobs
   useEffect(() => {
     if (!id) return;
     fetch(`http://localhost:8080/api/users/${id}/jobs`)
       .then(res => res.json())
-      .then((data: JobPost[]) => {
-        const filtered = data.filter(job => job.userId === id);
-        setOutgoingJobs(filtered);
-      })
-      .catch(err => {
-        console.error('Failed to load outgoing jobs:', err);
-        setOutgoingJobs([]);
-      });
+      .then(setOutgoingJobs)
+      .catch(() => setOutgoingJobs([]));
   }, [id]);
-
-  // Fetch poster names for picked-up jobs
-  useEffect(() => {
-    const uniqueIds = Array.from(new Set(pickedJobs.map(j => j.userId)));
-    Promise.all(
-      uniqueIds.map(uid =>
-        fetch(`http://localhost:8080/api/users/${uid}`)
-          .then(res => res.json())
-          .then((u: UserResponse) => [uid, u.name] as [string, string])
-          .catch(() => [uid, uid] as [string, string])
-      )
-    )
-      .then(entries => setPosterNames(Object.fromEntries(entries)))
-      .catch(err => console.error('Failed to load poster names:', err));
-  }, [pickedJobs]);
 
   const handleTabClick = (tab: 'picked' | 'outgoing') => setActiveTab(tab);
 
-  // Update job status
-  const handleUpdateStatus = (
-    jobId: string,
-    newStatus: JobPostStatus,
-    isPicked: boolean
-  ) => {
-    fetch(`http://localhost:8080/api/jobs/${jobId}?status=${newStatus}`, {
-      method: 'PUT'
-    })
-      .then(res => {
-        if (!res.ok) throw new Error(`Status update failed: ${res.status}`);
-        if (isPicked) {
-          setPickedJobs(prev =>
-            prev.map(j => (j.id === jobId ? { ...j, status: newStatus } : j))
-          );
-        } else {
-          setOutgoingJobs(prev =>
-            prev.map(j => (j.id === jobId ? { ...j, status: newStatus } : j))
-          );
-        }
+  // Open messaging modal and load conversation
+  const openMessage = (job: JobPost) => {
+    setModalJob(job);
+    fetch(`http://localhost:8080/api/messages/job/${job.id}`)
+      .then(res => res.json())
+      .then((conv: Conversation) => {
+        setConversation(conv);
+        setMessages(conv.messages);
       })
-      .catch(err => console.error(err));
+      .catch(() => {
+        setConversation(null);
+        setMessages([]);
+      });
+  };
+
+  // Close the modal
+  const closeModal = () => {
+    setModalJob(null);
+    setConversation(null);
+    setMessages([]);
+    setNewMessage('');
+  };
+
+  // Send a new message
+  const handleSend = () => {
+    if (!modalJob || !id || newMessage.trim() === '') return;
+    const payload = { senderId: id, content: newMessage };
+    fetch(`http://localhost:8080/api/messages/job/${modalJob.id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then((conv: Conversation) => {
+        setConversation(conv);
+        setMessages(conv.messages);
+        setNewMessage('');
+      })
+      .catch(err => console.error('Send message error:', err));
   };
 
   return (
@@ -110,108 +117,49 @@ export default function MyJobs() {
       <nav className="main-nav">
         <div className="logo"><strong>Sixxer</strong></div>
         <div className="nav-buttons">
-          <button onClick={() => navigate(-1)} className="nav-button">
-            Back
-          </button>
+          <button onClick={() => navigate(-1)} className="nav-button">Back</button>
         </div>
       </nav>
 
       <div className="main-page-container">
         <aside className="main-left">
-          <div className="left-banner">
-            <h2>My Jobs</h2>
-          </div>
+          <div className="left-banner"><h2>My Jobs</h2></div>
 
           <div className="tabs">
             <button
               className={`tab-button ${activeTab === 'picked' ? 'active' : ''}`}
               onClick={() => handleTabClick('picked')}
-            >
-              My Picked Up Jobs
-            </button>
+            >My Picked Up Jobs</button>
             <button
               className={`tab-button ${activeTab === 'outgoing' ? 'active' : ''}`}
               onClick={() => handleTabClick('outgoing')}
-            >
-              My Outgoing Jobs
-            </button>
+            >My Outgoing Jobs</button>
           </div>
 
-          <div
-            className={`jobs-section job-list ${
-              activeTab === 'picked' ? 'active' : ''
-            }`}
-          >
+          <div className={`jobs-section job-list ${activeTab === 'picked' ? 'active' : ''}`}>
             {pickedJobs.map(job => (
               <div key={job.id} className="job-card">
                 <h3>{job.jobName}</h3>
-                <p>
-                  Posted by: {posterNames[job.userId] || job.userId}
-                </p>
                 <p>{job.description}</p>
-                <div className="job-status">
-                  Status: <span>{job.status}</span>
-                </div>
                 <div className="status-controls">
-                  {job.status !== 'COMPLETED' && (
-                    <button
-                      className="status-button"
-                      onClick={() =>
-                        handleUpdateStatus(job.id, 'COMPLETED', true)
-                      }
-                    >
-                      Mark Completed
-                    </button>
-                  )}
+                  <button className="status-button" onClick={() => openMessage(job)}>
+                    Message
+                  </button>
                 </div>
               </div>
             ))}
             {pickedJobs.length === 0 && <p>No picked-up jobs.</p>}
           </div>
 
-          <div
-            className={`jobs-section job-list ${
-              activeTab === 'outgoing' ? 'active' : ''
-            }`}
-          >
+          <div className={`jobs-section job-list ${activeTab === 'outgoing' ? 'active' : ''}`}>
             {outgoingJobs.map(job => (
               <div key={job.id} className="job-card">
                 <h3>{job.jobName}</h3>
                 <p>{job.description}</p>
-                <div className="job-status">
-                  Status: <span>{job.status}</span>
-                </div>
                 <div className="status-controls">
-                  {job.status === 'OPEN' && (
-                    <>
-                      <button
-                        className="status-button"
-                        onClick={() =>
-                          handleUpdateStatus(job.id, 'ARCHIVED', false)
-                        }
-                      >
-                        Cancel Job
-                      </button>
-                      <button
-                        className="status-button"
-                        onClick={() =>
-                          handleUpdateStatus(job.id, 'IN_PROGRESS', false)
-                        }
-                      >
-                        Mark In Progress
-                      </button>
-                    </>
-                  )}
-                  {job.status === 'IN_PROGRESS' && (
-                    <button
-                      className="status-button"
-                      onClick={() =>
-                        handleUpdateStatus(job.id, 'COMPLETED', false)
-                      }
-                    >
-                      Mark Completed
-                    </button>
-                  )}
+                  <button className="status-button" onClick={() => openMessage(job)}>
+                    Message
+                  </button>
                 </div>
               </div>
             ))}
@@ -219,10 +167,35 @@ export default function MyJobs() {
           </div>
         </aside>
 
-        <section className="main-right">
-          {/* Optional details pane */}
-        </section>
+        <section className="main-right">{/* Optional details pane */}</section>
       </div>
+
+      {modalJob && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h2>Conversation</h2>
+            <div className="message-list">
+              {messages.length === 0 ? (
+                <p>No messages yet.</p>
+              ) : (
+                messages.map((m, i) => (
+                  <div key={i} className="message-item">
+                    <strong>{m.senderId === id ? 'You:' : 'Them:'}</strong> {m.content}
+                  </div>
+                ))
+              )}
+            </div>
+            <textarea
+              className="message-input"
+              rows={3}
+              placeholder="Type a message..."
+              value={newMessage}
+              onChange={e => setNewMessage(e.target.value)}
+            />
+            <button className="send-button" onClick={handleSend}>Send</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
