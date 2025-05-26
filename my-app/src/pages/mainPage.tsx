@@ -147,7 +147,7 @@ const MainPage: FC = () => {
   // Navigation handlers
   const handleCreatePost = () => navigate(`/users/${id}/createpost`);
   const handleUserStats = () => navigate(`/users/${id}/stats`);
-  const handleMyJobs = () => navigate(`/users/${id}/my-jobs`);
+  const handleMyJobs = () => navigate(`/users/${id}/myJobs`);
   const handleLeaderboard = () => navigate('/leaderboard');
   //const 
 
