@@ -105,22 +105,30 @@ const MainPage: FC = () => {
       setIsDragging(true);
     };
     const handlePickUp = (jobId: string, ownerId: string) => {
-    if (!id) return alert("Missing user ID.");
-    if (id == ownerId) return alert("Cant pick up your own job doofus");
-    fetch(`http://localhost:8080/api/jobs/${jobId}?userId=${id}`, {
-      method: 'PUT'
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to pick up job");
-        alert("Successfully picked up job!");
-        // Optionally refetch job list:
-        setJobs(prev => prev.filter(j => j.id !== jobId));
+      if (!id) {
+        alert("Missing user ID.");
+        return;
+      }
+      if (id === ownerId) {
+        alert("Can’t pick up your own job!");
+        return;
+      }
+
+      fetch(`http://localhost:8080/api/jobs/${jobId}/pickup?userId=${id}`, {
+        method: 'PUT'
       })
-      .catch(err => {
-        console.error(err);
-        alert("Error picking up job.");
-      });
-  };
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to pick up job");
+          alert("Successfully picked up job!");
+          // Remove from the available jobs list
+          setJobs(prev => prev.filter(j => j.id !== jobId));
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Error picking up job.");
+        });
+    };
+
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {

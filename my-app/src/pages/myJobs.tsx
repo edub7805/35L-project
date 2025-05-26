@@ -36,7 +36,7 @@ export default function MyJobs() {
   // Fetch jobs the user picked up: filter by assignedUserId on backend and ensure match
   useEffect(() => {
     if (!id) return;
-    fetch(`http://localhost:8080/api/jobs?assignedUserId=${id}`)
+    fetch(`http://localhost:8080/api/users/${id}/assigned-jobs`)
       .then(res => res.json())
       .then((data: JobPost[]) => {
         // Fallback filter in case backend returns more
@@ -52,7 +52,7 @@ export default function MyJobs() {
   // Fetch jobs the user posted: filter by userId on backend and ensure match
   useEffect(() => {
     if (!id) return;
-    fetch(`http://localhost:8080/api/jobs?userId=${id}`)
+    fetch(`http://localhost:8080/api/users/${id}/jobs`)
       .then(res => res.json())
       .then((data: JobPost[]) => {
         const filtered = data.filter(job => job.userId === id);
@@ -177,7 +177,6 @@ export default function MyJobs() {
             {outgoingJobs.map(job => (
               <div key={job.id} className="job-card">
                 <h3>{job.jobName}</h3>
-                <p>Requested from: You</p>
                 <p>{job.description}</p>
                 <div className="job-status">
                   Status: <span>{job.status}</span>
