@@ -28,7 +28,7 @@ public class AuthController {
         }
 
         User user = new User(
-                
+                request.getId(),
                 request.getName(),
                 request.getEmail(),
                 request.getPassword()

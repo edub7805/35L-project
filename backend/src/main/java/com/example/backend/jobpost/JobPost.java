@@ -22,6 +22,10 @@ public class JobPost {
 
     private String assignedTo;
 
+    private int    reviewCount   = 0;
+    private int    ratingSum     = 0;
+    private double averageRating = 0.0;
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -52,7 +56,14 @@ public class JobPost {
     public Instant getCompletedAt() { return completedAt; }
     public void setCompletedAt(Instant completedAt) { this.completedAt = completedAt; }
 
-    
+    public String getAssignedTo() { return assignedTo; }
     public void setAssignedTo(String userId) { this.assignedTo = userId; }
+
+    public int    getReviewCount() { return reviewCount; }
+    public void   setReviewCount(int reviewCount) { this.reviewCount = reviewCount; }
+    public int    getRatingSum() { return ratingSum; }
+    public void   setRatingSum(int ratingSum) { this.ratingSum = ratingSum; }
+    public double getAverageRating() { return averageRating; }
+    public void   setAverageRating(double averageRating) { this.averageRating = averageRating; }
     // constructors, getters/setters...
 }
