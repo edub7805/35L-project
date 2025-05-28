@@ -54,7 +54,6 @@ export default function MyJobs() {
   const [newMessage, setNewMessage] = useState<string>('');
 
   const [reviewingJob, setReviewingJob] = useState<JobPost | null>(null);
-  
   const [starRating, setStarRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>('');
 
@@ -99,7 +98,7 @@ export default function MyJobs() {
       })
         .then(res => {
           if (!res.ok) throw new Error("Failed to pick up job");
-          //setReviewingJob(job);
+          setReviewingJob(job);
           // Remove from the available jobs list
           //setJobs(prev => prev.filter(j => j.id !== jobId));
         })
@@ -108,6 +107,44 @@ export default function MyJobs() {
           alert("Error picking up job.");
         });
   }
+   const submitReview = () => {
+    if (!reviewingJob || starRating < 1) {
+      alert("Please select 1–5 stars");
+      return;
+    }
+    const payload = {
+      authorId: id,
+      rating: starRating,
+      text: reviewText
+    };
+    fetch(
+      `http://localhost:8080/api/jobs/${reviewingJob.id}/reviews`,  // <-- added `/api`
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }
+    )
+      .then(res => {
+        if (!res.ok) throw new Error("Review failed");
+        alert("Thanks for your review!");
+        setReviewingJob(null);
+        setStarRating(0);
+        setReviewText("");
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error submitting review.");
+      });
+  };
+
+
+  const closeReviewModal = () => {
+    setReviewingJob(null);
+    setStarRating(0);
+    setReviewText('');
+  };
+
 
   // Close the modal
   const closeModal = () => {
@@ -119,109 +156,149 @@ export default function MyJobs() {
 
   // Send a new message
   const handleSend = () => {
-    if (!modalJob || !id || newMessage.trim() === '') return;
+    if (!modalJob || !id || newMessage.trim() === "") return;
+
     const payload = { senderId: id, content: newMessage };
-    fetch(`http://localhost:8080/api/messages/job/${modalJob.id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
+    fetch(
+      `http://localhost:8080/api/messages/job/${modalJob.id}`,  // <-- back to messages
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }
+    )
       .then(res => res.json())
       .then((conv: Conversation) => {
         setConversation(conv);
         setMessages(conv.messages);
-        setNewMessage('');
+        setNewMessage("");
       })
-      .catch(err => console.error('Send message error:', err));
+      .catch(err => console.error("Send message error:", err));
   };
 
   return (
-    <div className="page-wrapper">
-      <nav className="main-nav">
-        <div className="logo"><strong>Sixxer</strong></div>
-        <div className="nav-buttons">
-          <button onClick={() => navigate(-1)} className="nav-button">Back</button>
-        </div>
-      </nav>
-
-      <div className="main-page-container">
-        <aside className="main-left">
-          <div className="left-banner"><h2>My Jobs</h2></div>
-
-          <div className="tabs">
-            <button
-              className={`tab-button ${activeTab === 'picked' ? 'active' : ''}`}
-              onClick={() => handleTabClick('picked')}
-            >My Picked Up Jobs</button>
-            <button
-              className={`tab-button ${activeTab === 'outgoing' ? 'active' : ''}`}
-              onClick={() => handleTabClick('outgoing')}
-            >My Outgoing Jobs</button>
-          </div>
-
-          <div className={`jobs-section job-list ${activeTab === 'picked' ? 'active' : ''}`}>
-            {pickedJobs.map(job => (
-              <div key={job.id} className="job-card">
-                <h3>{job.jobName}</h3>
-                <p>{job.description}</p>
-                <div className="status-controls">
-                  <button className="status-button" onClick={() => openMessage(job)}>
-                    Message
-                  </button>
-                </div>
-              </div>
-            ))}
-            {pickedJobs.length === 0 && <p>No picked-up jobs.</p>}
-          </div>
-
-          <div className={`jobs-section job-list ${activeTab === 'outgoing' ? 'active' : ''}`}>
-            {outgoingJobs.map(job => (
-              <div key={job.id} className="job-card">
-                <h3>{job.jobName}</h3>
-                <p>{job.description}</p>
-                <div className="status-controls">
-                  <button className="status-button" onClick={() => completeJob(job)}>
-                    Complete
-                  </button>
-                  <button className="status-button" onClick={() => openMessage(job)}>
-                    Message
-                  </button>
-                </div>
-              </div>
-            ))}
-            {outgoingJobs.length === 0 && <p>No outgoing jobs.</p>}
-          </div>
-        </aside>
-
-        <section className="main-right">{/* Optional details pane */}</section>
+  <div className="page-wrapper">
+    <nav className="main-nav">
+      <div className="logo"><strong>Sixxer</strong></div>
+      <div className="nav-buttons">
+        <button onClick={() => navigate(-1)} className="nav-button">Back</button>
       </div>
+    </nav>
 
-      {modalJob && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h2>Conversation</h2>
-            <div className="message-list">
-              {messages.length === 0 ? (
-                <p>No messages yet.</p>
-              ) : (
-                messages.map((m, i) => (
-                  <div key={i} className="message-item">
-                    <strong>{m.senderId === id ? 'You:' : 'Them:'}</strong> {m.content}
-                  </div>
-                ))
-              )}
-            </div>
-            <textarea
-              className="message-input"
-              rows={3}
-              placeholder="Type a message..."
-              value={newMessage}
-              onChange={e => setNewMessage(e.target.value)}
-            />
-            <button className="send-button" onClick={handleSend}>Send</button>
-          </div>
+    <div className="main-page-container">
+      <aside className="main-left">
+        <div className="left-banner"><h2>My Jobs</h2></div>
+
+        <div className="tabs">
+          <button
+            className={`tab-button ${activeTab === 'picked' ? 'active' : ''}`}
+            onClick={() => handleTabClick('picked')}
+          >
+            My Picked Up Jobs
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'outgoing' ? 'active' : ''}`}
+            onClick={() => handleTabClick('outgoing')}
+          >
+            My Outgoing Jobs
+          </button>
         </div>
-      )}
+
+        <div className={`jobs-section job-list ${activeTab === 'picked' ? 'active' : ''}`}>
+          {pickedJobs.map(job => (
+            <div key={job.id} className="job-card">
+              <h3>{job.jobName}</h3>
+              <p>{job.description}</p>
+              <div className="status-controls">
+                <button className="status-button" onClick={() => openMessage(job)}>
+                  Message
+                </button>
+              </div>
+            </div>
+          ))}
+          {pickedJobs.length === 0 && <p>No picked-up jobs.</p>}
+        </div>
+
+        <div className={`jobs-section job-list ${activeTab === 'outgoing' ? 'active' : ''}`}>
+          {outgoingJobs.map(job => (
+            <div key={job.id} className="job-card">
+              <h3>{job.jobName}</h3>
+              <p>{job.description}</p>
+              <div className="status-controls">
+                <button className="status-button" onClick={() => completeJob(job)}>
+                  Complete
+                </button>
+                <button className="status-button" onClick={() => openMessage(job)}>
+                  Message
+                </button>
+              </div>
+            </div>
+          ))}
+          {outgoingJobs.length === 0 && <p>No outgoing jobs.</p>}
+        </div>
+      </aside>
+
+      <section className="main-right"></section>
     </div>
-  );
+
+    {/* Message Modal */}
+    {modalJob && (
+      <div className="modal-overlay" onClick={closeModal}>
+        <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <h2>Conversation</h2>
+          <div className="message-list">
+            {messages.length === 0 ? (
+              <p>No messages yet.</p>
+            ) : (
+              messages.map((m, i) => (
+                <div key={i} className="message-item">
+                  <strong>{m.senderId === id ? 'You:' : 'Them:'}</strong> {m.content}
+                </div>
+              ))
+            )}
+          </div>
+          <textarea
+            className="message-input"
+            rows={3}
+            placeholder="Type a message..."
+            value={newMessage}
+            onChange={e => setNewMessage(e.target.value)}
+          />
+          <button className="send-button" onClick={handleSend}>Send</button>
+        </div>
+      </div>
+    )}
+
+    {/* Review Modal */}
+    {reviewingJob && (
+      <div className="modal-overlay" onClick={closeReviewModal}>
+        <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <h2>How did they do?</h2>
+          <div className="star-rating">
+            {[1, 2, 3, 4, 5].map(n => (
+              <span
+                key={n}
+                className={`star ${n <= starRating ? 'filled' : ''}`}
+                onClick={() => setStarRating(n)}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+          <textarea
+            className="message-input"
+            rows={3}
+            placeholder="Write your review..."
+            value={reviewText}
+            onChange={e => setReviewText(e.target.value)}
+          />
+          <button className="send-button" onClick={submitReview}>
+            Submit Review
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
 }
