@@ -36,6 +36,17 @@ interface UserStats {
   rank: number;
 }
 
+interface Review {
+  id: string;
+  jobId: string;
+  authorId: string;
+  rating: number;
+  text: string;
+  createdAt: string;
+}
+
+
+
 const MainPage: FC = () => {
   const { id } = useParams<{ id: string }>(); // used only for greeting
   const navigate = useNavigate();
@@ -49,6 +60,8 @@ const MainPage: FC = () => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const [userRating, setUserRating] = useState<UserRating | null>(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState<boolean>(false);
+  const [userReviews, setUserReviews] = useState<Review[]>([]);
 
 
   // Refs for resize handling
@@ -156,6 +169,16 @@ const MainPage: FC = () => {
         });
     };
 
+    // view Reviews
+    const viewReviews = () => {
+    if (!id) return;
+    fetch(`http://localhost:8080/api/users/${id}/reviews`)
+      .then(res => res.json())
+      .then((rev: Review[]) => { setUserReviews(rev); setReviewModalOpen(true); })
+      .catch(() => setUserReviews([]));
+  };
+  const closeReviewModal = () => setReviewModalOpen(false);
+
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
@@ -250,7 +273,7 @@ const MainPage: FC = () => {
                 <>
                   <p>Average: {userRating.averageRating.toFixed(1)} ★</p>
                   <p>Reviews: {userRating.reviewCount}</p>
-                  <button onClick={handleUserStats} className="action-button">
+                  <button onClick={() => viewReviews()} className="action-button">
                     View Details
                   </button>
                 </>
@@ -261,6 +284,31 @@ const MainPage: FC = () => {
           </div>
         </section>
       </div>
+      {/* Reviews Modal */}
+      {reviewModalOpen && (
+        <div className="modal-overlay" onClick={closeReviewModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h2>User Reviews</h2>
+            <div className="review-list">
+              <table>
+                <thead>
+                  <tr><th>Rating</th><th>Comment</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                  {userReviews.map(r => (
+                    <tr key={r.id}>
+                      <td>{r.rating} ★</td>
+                      <td>{r.text}</td>
+                      <td>{new Date(r.createdAt).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <button className="send-button" onClick={closeReviewModal}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
