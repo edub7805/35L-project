@@ -36,6 +36,8 @@ interface Conversation {
   updatedAt: string;
 }
 
+
+
 export default function MyJobs() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -50,6 +52,11 @@ export default function MyJobs() {
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<ConversationContent[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
+
+  const [reviewingJob, setReviewingJob] = useState<JobPost | null>(null);
+  
+  const [starRating, setStarRating] = useState<number>(0);
+  const [reviewText, setReviewText] = useState<string>('');
 
   // Fetch picked-up jobs
   useEffect(() => {
@@ -92,7 +99,7 @@ export default function MyJobs() {
       })
         .then(res => {
           if (!res.ok) throw new Error("Failed to pick up job");
-          alert("Successfully completed a job!");
+          //setReviewingJob(job);
           // Remove from the available jobs list
           //setJobs(prev => prev.filter(j => j.id !== jobId));
         })
