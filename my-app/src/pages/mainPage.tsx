@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './mainPage.css';
 
+
 //define a type for the status of jobpost from backend
 type JobPostStatus = 
   'DRAFT' | 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
