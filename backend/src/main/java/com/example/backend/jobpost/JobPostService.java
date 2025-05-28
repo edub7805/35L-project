@@ -80,8 +80,8 @@ public class JobPostService {
     /**
      * Mark a job as completed.
      */
-    public JobPost complete(String id) {
-        JobPost post = getById(id);
+    public JobPost complete(String jobId) {
+        JobPost post = getById(jobId);
         post.setStatus(JobPostStatus.COMPLETED);
         post.setCompletedAt(Instant.now());
         post.setUpdatedAt(Instant.now());

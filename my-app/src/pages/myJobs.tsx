@@ -86,6 +86,22 @@ export default function MyJobs() {
       });
   };
 
+  const completeJob = (job: JobPost) => {
+    fetch(`http://localhost:8080/api/jobs/${job.id}/complete?userId=${job.userId}`, {
+        method: 'PUT'
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to pick up job");
+          alert("Successfully completed a job!");
+          // Remove from the available jobs list
+          //setJobs(prev => prev.filter(j => j.id !== jobId));
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Error picking up job.");
+        });
+  }
+
   // Close the modal
   const closeModal = () => {
     setModalJob(null);
@@ -157,6 +173,9 @@ export default function MyJobs() {
                 <h3>{job.jobName}</h3>
                 <p>{job.description}</p>
                 <div className="status-controls">
+                  <button className="status-button" onClick={() => completeJob(job)}>
+                    Complete
+                  </button>
                   <button className="status-button" onClick={() => openMessage(job)}>
                     Message
                   </button>

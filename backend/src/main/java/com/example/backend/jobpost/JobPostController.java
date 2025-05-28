@@ -107,5 +107,14 @@ public class JobPostController {
         service.pickUpJob(jobId, userId);
     }
 
+    @PutMapping("/jobs/{jobId}/complete")
+    @ResponseStatus(HttpStatus.OK)
+    public void complete(
+            @PathVariable String jobId,
+            @RequestParam String userId
+    ) {
+        service.complete(jobId);
+    }
+
     // Additional endpoints (update status, delete, etc.) can go here
 }
