@@ -4,8 +4,6 @@ import Signup from './pages/Signup';
 import CreatePost from './pages/create_job'
 import MainPage from './pages/mainPage'
 import UserStats from './pages/UserStats';
-import Leaderboard from './pages/Leaderboard';
-import myJobs from './pages/myJobs';
 import MyJobs from './pages/myJobs';
 
 function App() {
@@ -32,10 +30,6 @@ function App() {
 
         {/* My Jobs Page */}
         <Route path="/users/:id/myJobs" element={<MyJobs />} />
-
-        {/* Leaderboard */}
-        <Route path="/leaderboard" element={<Leaderboard />} />
-
       </Routes>
     </Router>
   );

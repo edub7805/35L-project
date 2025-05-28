@@ -20,7 +20,9 @@ public class JobPostService {
         JobPost post = new JobPost();
         post.setUserId(userId);
         post.setJobName(dto.getJobName());
-        post.setTime(dto.getTime());
+        post.setDate(dto.getDate());
+        post.setStartTime(dto.getStartTime());
+        post.setEndTime(dto.getEndTime());
         post.setDescription(dto.getDescription());
         post.setStatus(JobPostStatus.OPEN);
         post.setCreatedAt(Instant.now());

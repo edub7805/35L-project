@@ -29,13 +29,6 @@ interface UserRating {
   averageRating: number;
 }
 
-interface UserStats {
-  jobsPosted: number;
-  jobsTaken: number;
-  points: number;
-  rank: number;
-}
-
 const MainPage: FC = () => {
   const { id } = useParams<{ id: string }>(); // used only for greeting
   const navigate = useNavigate();
@@ -56,14 +49,6 @@ const MainPage: FC = () => {
   const dividerRef = useRef<HTMLDivElement>(null);
 
 
-
-  // Dummy stats data (replace with real API)
-  const userStats: UserStats = {
-    jobsPosted: 5,
-    jobsTaken: 12,
-    points: 340,
-    rank: 8,
-  };
 
   // Fetch username (for greeting)
   useEffect(() => {
@@ -106,9 +91,10 @@ const MainPage: FC = () => {
       .catch(err => console.error('Failed to load poster names:', err));
   }, [jobs]);
 
-  // Filter jobs by search term
+  // Filter jobs by search term (job name or poster name)
   const filtered = jobs.filter(job =>
-    job.jobName.toLowerCase().includes(search.toLowerCase())
+    job.jobName.toLowerCase().includes(search.toLowerCase()) ||
+    (posterNames[job.userId] || '').toLowerCase().includes(search.toLowerCase())
   );
 
   //job review
@@ -137,7 +123,7 @@ const MainPage: FC = () => {
         return;
       }
       if (id === ownerId) {
-        alert("Can’t pick up your own job!");
+        alert("Can't pick up your own job!");
         return;
       }
 
@@ -183,8 +169,6 @@ const MainPage: FC = () => {
   const handleCreatePost = () => navigate(`/users/${id}/createpost`);
   const handleUserStats = () => navigate(`/users/${id}/stats`);
   const handleMyJobs = () => navigate(`/users/${id}/myJobs`);
-  const handleLeaderboard = () => navigate('/leaderboard');
-  //const 
 
   return (
     <div className="page-wrapper">
@@ -192,8 +176,7 @@ const MainPage: FC = () => {
         <div className="logo"><strong>Sixxer</strong></div>
         <div className="nav-buttons">
           <button onClick={handleMyJobs} className="nav-button">My Jobs</button>
-          <button onClick={handleUserStats} className="nav-button">Stats ({userStats.points} pts)</button>
-          <button onClick={handleLeaderboard} className="nav-button">Leaderboard</button>
+          <button onClick={handleUserStats} className="nav-button">Statistics</button>
           <button onClick={handleCreatePost} className="nav-button">+ Create Job</button>
         </div>
       </nav>
