@@ -22,6 +22,12 @@ interface UserResponse {
   email: string;
 }
 
+interface UserRating {
+  reviewCount: number;
+  ratingSum: number;
+  averageRating: number;
+}
+
 interface UserStats {
   jobsPosted: number;
   jobsTaken: number;
@@ -41,9 +47,14 @@ const MainPage: FC = () => {
   const [leftPanelWidth, setLeftPanelWidth] = useState<number>(70);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
+  const [userRating, setUserRating] = useState<UserRating | null>(null);
+
+
   // Refs for resize handling
   const containerRef = useRef<HTMLDivElement>(null);
   const dividerRef = useRef<HTMLDivElement>(null);
+
+
 
   // Dummy stats data (replace with real API)
   const userStats: UserStats = {
@@ -98,6 +109,21 @@ const MainPage: FC = () => {
   const filtered = jobs.filter(job =>
     job.jobName.toLowerCase().includes(search.toLowerCase())
   );
+
+  //job review
+  useEffect(() => {
+    if (!id) return;
+    fetch(`http://localhost:8080/api/users/${id}/rating`)
+      .then(res => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.json();
+      })
+      .then((r: UserRating) => setUserRating(r))
+      .catch(err => {
+        console.error("Failed to load rating:", err);
+      });
+  }, [id]);
+
 
   // Divider drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -218,12 +244,18 @@ const MainPage: FC = () => {
             <p className="action-sub">Ready to post a new job?</p>
             <button onClick={handleCreatePost} className="action-button">Create Job</button>
             <div className="stats-preview">
-              <h3>Your Activity</h3>
-              <p>Jobs Posted: {userStats.jobsPosted}</p>
-              <p>Jobs Taken: {userStats.jobsTaken}</p>
-              <p>Points: {userStats.points}</p>
-              <p>Rank: #{userStats.rank}</p>
-              <button onClick={handleUserStats} className="action-button">View Details</button>
+              <h3>Your Rating</h3>
+              {userRating ? (
+                <>
+                  <p>Average: {userRating.averageRating.toFixed(1)} ★</p>
+                  <p>Reviews: {userRating.reviewCount}</p>
+                  <button onClick={handleUserStats} className="action-button">
+                    View Details
+                  </button>
+                </>
+              ) : (
+                <p>Loading…</p>
+              )}
             </div>
           </div>
         </section>
