@@ -217,21 +217,20 @@ const MainPage: FC = () => {
           </div>
           <div className="job-list">
             {filtered.map(job => (
-              <div key={job.id} className="job-card">
-                <div className="job-card-header">
-                  <span className="job-title">{job.jobName}</span>
+              <div key={job.id} className="job-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div className="job-card-body">
+                  <div className="job-title" style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: 4 }}>{job.jobName}</div>
+                  <p className="job-poster">Posted by: {posterNames[job.userId] || job.userId}</p>
+                  <p className="job-desc">{job.description}</p>
+                </div>
+                <div className="job-card-actions">
                   <button
                     onClick={() => handlePickUp(job.id, job.userId)}
                     className="nav-button job-pickup-btn"
                   >Pick Up</button>
-                </div>
-                <div className="job-card-body">
-                  <p className="job-poster">Posted by: {posterNames[job.userId] || job.userId}</p>
-                  <p className="job-desc">{job.description}</p>
                   <button
                     className="nav-button view-profile-btn"
                     onClick={() => navigate(`/users/${job.userId}/profile`)}
-                    style={{ marginTop: '0.5rem', background: '#fff', color: '#2575fc', border: '1px solid #2575fc' }}
                   >View Profile</button>
                 </div>
               </div>
