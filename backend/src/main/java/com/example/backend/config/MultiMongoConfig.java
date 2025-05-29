@@ -81,4 +81,25 @@ public class MultiMongoConfig {
             mongoTemplateRef = "messageMongoTemplate"
     )
     static class MessageDbReposConfig {}
+
+    // ─── REVIEWS-DB ────────────────────────────────────────────────────────
+
+    @Bean
+    public MongoDatabaseFactory reviewDbFactory() {
+        ConnectionString connString = new ConnectionString(mongoUri);
+        MongoClient client          = MongoClients.create(connString);
+        return new SimpleMongoClientDatabaseFactory(client, "reviews-db");
+    }
+
+    @Bean
+    public MongoTemplate reviewMongoTemplate() {
+        return new MongoTemplate(reviewDbFactory());
+    }
+
+    @Configuration
+    @EnableMongoRepositories(
+            basePackages     = "com.example.backend.review",
+            mongoTemplateRef = "reviewMongoTemplate"
+    )
+    static class ReviewDbReposConfig {}
 }

@@ -13,17 +13,30 @@ import com.example.backend.user.UserSignupRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.example.backend.review.Review;
+import com.example.backend.review.ReviewService;
+
+import java.util.List;
 import java.util.Objects;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api")
 public class AuthController {
-
+    
+    private final UserRepository userRepository;
+    private final ReviewService reviewService;
+    
     @Autowired
-    private UserRepository userRepository;
+    public AuthController(UserRepository userRepository,
+                          ReviewService reviewService) { 
+        this.userRepository = userRepository;
+        this.reviewService  = reviewService;
+    }
 
     @PostMapping("/signup")
     public UserResponse signup(@RequestBody UserSignupRequest request) {
@@ -32,7 +45,7 @@ public class AuthController {
         }
 
         User user = new User(
-                
+                request.getId(),
                 request.getName(),
                 request.getEmail(),
                 request.getPassword()
@@ -68,4 +81,58 @@ public class AuthController {
             );
         return new UserResponse(u);
     }
+
+
+    //Get user rating
+    @GetMapping("/users/{id}/rating")
+    public ResponseEntity<UserRatingResponse> getUserRating(@PathVariable String id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+                )
+            );
+
+        UserRatingResponse resp = new UserRatingResponse(
+            user.getReviewCount(),
+            user.getRatingSum(),
+            user.getAverageRating()
+        );
+        return ResponseEntity.ok(resp);
+    }
+    // get reviews from each user
+    @GetMapping("/users/{id}/reviews")
+    public ResponseEntity<List<Review>> getUserReviews(@PathVariable String id) {
+        // Ensure user exists
+        userRepository.findById(id)
+            .orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+                )
+            );
+
+        List<Review> reviews = reviewService.getReviewsByAuthor(id);
+        return ResponseEntity.ok(reviews);
+    }
+
+
+    // DTO for rating fields
+    public static class UserRatingResponse {
+        private final int    reviewCount;
+        private final int    ratingSum;
+        private final double averageRating;
+
+        public UserRatingResponse(int reviewCount, int ratingSum, double averageRating) {
+            this.reviewCount   = reviewCount;
+            this.ratingSum     = ratingSum;
+            this.averageRating = averageRating;
+        }
+
+        public int getReviewCount()    { return reviewCount; }
+        public int getRatingSum()      { return ratingSum; }
+        public double getAverageRating() { return averageRating; }
+    }
 }
+

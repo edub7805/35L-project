@@ -10,7 +10,9 @@ public class JobPost {
     private String id;
     private String userId;       // who posted it
     private String jobName;
-    private String time;
+    private String date;
+    private String startTime;
+    private String endTime;
     private String description;
 
     private String assignedUserId;  // buyer/customer
@@ -22,6 +24,10 @@ public class JobPost {
 
     private String assignedTo;
 
+    private int    reviewCount   = 0;
+    private int    ratingSum     = 0;
+    private double averageRating = 0.0;
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -31,8 +37,14 @@ public class JobPost {
     public String getJobName() { return jobName; }
     public void setJobName(String jobName) { this.jobName = jobName; }
 
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
+    public String getDate() { return date; }
+    public void setDate(String date) { this.date = date; }
+
+    public String getStartTime() { return startTime; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
+
+    public String getEndTime() { return endTime; }
+    public void setEndTime(String endTime) { this.endTime = endTime; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
@@ -52,7 +64,14 @@ public class JobPost {
     public Instant getCompletedAt() { return completedAt; }
     public void setCompletedAt(Instant completedAt) { this.completedAt = completedAt; }
 
-    
+    public String getAssignedTo() { return assignedTo; }
     public void setAssignedTo(String userId) { this.assignedTo = userId; }
+
+    public int    getReviewCount() { return reviewCount; }
+    public void   setReviewCount(int reviewCount) { this.reviewCount = reviewCount; }
+    public int    getRatingSum() { return ratingSum; }
+    public void   setRatingSum(int ratingSum) { this.ratingSum = ratingSum; }
+    public double getAverageRating() { return averageRating; }
+    public void   setAverageRating(double averageRating) { this.averageRating = averageRating; }
     // constructors, getters/setters...
 }

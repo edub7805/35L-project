@@ -5,53 +5,41 @@ import './UserStats.css';
 interface UserData {
   id: string;
   name: string;
-  email: string;
+  reviewCount: number;
+  ratingSum: number;
+  averageRating: number;
 }
 
-interface UserStats {
-  jobsPosted: number;
-  jobsTaken: number;
-  points: number;
-  rank: number;
+interface Review {
+  id: string;
+  jobId: string;
+  authorId: string;
+  authorName: string;
+  rating: number;
+  text: string;
+  createdAt: string;
 }
 
 interface JobHistory {
-  id: number;
-  title: string;
+  id: string;
+  jobName: string;
   date: string;
-  status: 'posted' | 'taken' | 'completed';
-  points: number;
+  startTime: string;
+  endTime: string;
+  status: 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
+  description: string;
 }
 
 const UserStats: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [activeTab, setActiveTab] = useState<'posted' | 'taken' | 'points'>('posted');
-
-  // Dummy data - would come from API in real app
-  const userStats: UserStats = {
-    jobsPosted: 15,
-    jobsTaken: 22,
-    points: 740,
-    rank: 8
-  };
-
-  const jobsPosted: JobHistory[] = Array.from({ length: 10 }, (_, i) => ({
-    id: i,
-    title: `Posted Job #${i + 1}`,
-    date: new Date(Date.now() - i * 86400000).toLocaleDateString(),
-    status: i < 3 ? 'completed' : 'posted',
-    points: i < 3 ? 50 : 20
-  }));
-
-  const jobsTaken: JobHistory[] = Array.from({ length: 7 }, (_, i) => ({
-    id: i + 100,
-    title: `Taken Job #${i + 1}`,
-    date: new Date(Date.now() - i * 86400000 * 2).toLocaleDateString(),
-    status: i < 5 ? 'completed' : 'taken',
-    points: i < 5 ? 70 : 30
-  }));
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [jobsPosted, setJobsPosted] = useState<JobHistory[]>([]);
+  const [jobsTaken, setJobsTaken] = useState<JobHistory[]>([]);
+  const [activeTab, setActiveTab] = useState<'posted' | 'taken' | 'reviews'>('posted');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch user data
   useEffect(() => {
@@ -60,23 +48,82 @@ const UserStats: React.FC = () => {
       return;
     }
 
-    // In a real app, this would be an API call
-    fetch(`http://localhost:8080/api/users/${id}`)
-      .then(r => r.json())
-      .then((data: UserData) => setUserData(data))
-      .catch(err => {
-        console.error('Error fetching user data:', err);
-        navigate('/login');
-      });
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Fetch user data
+        const userRes = await fetch(`http://localhost:8080/api/users/${id}`);
+        if (!userRes.ok) throw new Error('Failed to fetch user data');
+        const userData = await userRes.json();
+        setUserData(userData);
+
+        // Fetch user reviews with author names
+        const reviewsRes = await fetch(`http://localhost:8080/api/users/${id}/reviews`);
+        if (!reviewsRes.ok) throw new Error('Failed to fetch reviews');
+        const reviewsData = await reviewsRes.json();
+        
+        // Fetch author names for each review
+        const reviewsWithAuthors = await Promise.all(
+          reviewsData.map(async (review: Review) => {
+            try {
+              const authorRes = await fetch(`http://localhost:8080/api/users/${review.authorId}`);
+              if (!authorRes.ok) throw new Error('Failed to fetch author');
+              const authorData = await authorRes.json();
+              return { ...review, authorName: authorData.name };
+            } catch (err) {
+              console.error('Error fetching author name:', err);
+              return { ...review, authorName: 'Unknown User' };
+            }
+          })
+        );
+        setReviews(reviewsWithAuthors);
+
+        // Fetch posted jobs
+        const postedRes = await fetch(`http://localhost:8080/api/users/${id}/jobs`);
+        if (!postedRes.ok) throw new Error('Failed to fetch posted jobs');
+        const postedData = await postedRes.json();
+        setJobsPosted(postedData);
+
+        // Fetch taken jobs
+        const takenRes = await fetch(`http://localhost:8080/api/users/${id}/assigned-jobs`);
+        if (!takenRes.ok) throw new Error('Failed to fetch taken jobs');
+        const takenData = await takenRes.json();
+        setJobsTaken(takenData);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, [id, navigate]);
 
   const handleBackToMain = () => {
     navigate(`/users/${id}/mainPage`);
   };
 
-  const handleLeaderboard = () => {
-    navigate('/leaderboard');
-  };
+  if (isLoading) {
+    return (
+      <div className="stats-page">
+        <div className="loading">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="stats-page">
+        <div className="error-message">
+          <h2>Error</h2>
+          <p>{error}</p>
+          <button onClick={handleBackToMain}>Back to Main</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="stats-page">
@@ -89,26 +136,25 @@ const UserStats: React.FC = () => {
         </div>
         <div className="user-info">
           <h2>{userData?.name || 'Loading...'}</h2>
-          <div className="rank-badge">Rank #{userStats.rank}</div>
+          <div className="rating-badge">
+            {userData?.averageRating ? `${userData.averageRating.toFixed(1)} ★` : 'No ratings yet'}
+          </div>
         </div>
       </header>
 
       <div className="stats-overview">
         <div className="stat-card">
-          <div className="stat-number">{userStats.jobsPosted}</div>
+          <div className="stat-number">{jobsPosted.length}</div>
           <div className="stat-label">Jobs Posted</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">{userStats.jobsTaken}</div>
+          <div className="stat-number">{jobsTaken.length}</div>
           <div className="stat-label">Jobs Taken</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">{userStats.points}</div>
-          <div className="stat-label">Total Points</div>
+          <div className="stat-number">{userData?.reviewCount || 0}</div>
+          <div className="stat-label">Total Reviews</div>
         </div>
-        <button className="leaderboard-button" onClick={handleLeaderboard}>
-          View Leaderboard
-        </button>
       </div>
 
       <div className="stats-tabs">
@@ -125,10 +171,10 @@ const UserStats: React.FC = () => {
           Jobs Taken
         </button>
         <button 
-          className={activeTab === 'points' ? 'active' : ''} 
-          onClick={() => setActiveTab('points')}
+          className={activeTab === 'reviews' ? 'active' : ''} 
+          onClick={() => setActiveTab('reviews')}
         >
-          Points History
+          Reviews
         </button>
       </div>
 
@@ -141,21 +187,23 @@ const UserStats: React.FC = () => {
                 <tr>
                   <th>Job Title</th>
                   <th>Date</th>
+                  <th>Time</th>
                   <th>Status</th>
-                  <th>Points</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
                 {jobsPosted.map(job => (
                   <tr key={job.id}>
-                    <td>{job.title}</td>
-                    <td>{job.date}</td>
+                    <td>{job.jobName}</td>
+                    <td>{new Date(job.date).toLocaleDateString()}</td>
+                    <td>{`${job.startTime} - ${job.endTime}`}</td>
                     <td>
-                      <span className={`status-badge ${job.status}`}>
-                        {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                      <span className={`status-badge ${job.status.toLowerCase()}`}>
+                        {job.status}
                       </span>
                     </td>
-                    <td>+{job.points}</td>
+                    <td>{job.description}</td>
                   </tr>
                 ))}
               </tbody>
@@ -171,21 +219,23 @@ const UserStats: React.FC = () => {
                 <tr>
                   <th>Job Title</th>
                   <th>Date</th>
+                  <th>Time</th>
                   <th>Status</th>
-                  <th>Points</th>
+                  <th>Description</th>
                 </tr>
               </thead>
               <tbody>
                 {jobsTaken.map(job => (
                   <tr key={job.id}>
-                    <td>{job.title}</td>
-                    <td>{job.date}</td>
+                    <td>{job.jobName}</td>
+                    <td>{new Date(job.date).toLocaleDateString()}</td>
+                    <td>{`${job.startTime} - ${job.endTime}`}</td>
                     <td>
-                      <span className={`status-badge ${job.status}`}>
-                        {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                      <span className={`status-badge ${job.status.toLowerCase()}`}>
+                        {job.status}
                       </span>
                     </td>
-                    <td>+{job.points}</td>
+                    <td>{job.description}</td>
                   </tr>
                 ))}
               </tbody>
@@ -193,24 +243,32 @@ const UserStats: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'points' && (
-          <div className="points-history">
-            <h3>Points History</h3>
-            <div className="points-summary">
-              <p><strong>Current Point Total:</strong> {userStats.points}</p>
-              <p><strong>Points from Posted Jobs:</strong> {jobsPosted.reduce((acc, job) => acc + job.points, 0)}</p>
-              <p><strong>Points from Taken Jobs:</strong> {jobsTaken.reduce((acc, job) => acc + job.points, 0)}</p>
-              <p><strong>Bonus Points:</strong> 100</p>
+        {activeTab === 'reviews' && (
+          <div className="reviews-list">
+            <h3>Reviews Received</h3>
+            <div className="reviews-summary">
+              <p><strong>Average Rating:</strong> {userData?.averageRating.toFixed(1) || '0.0'} ★</p>
+              <p><strong>Total Reviews:</strong> {userData?.reviewCount || 0}</p>
             </div>
-            <div className="points-explanation">
-              <h4>How Points Work</h4>
-              <ul>
-                <li>Earn 20 points when you post a job</li>
-                <li>Earn additional 30 points when your posted job is completed</li>
-                <li>Earn 30 points when you take a job</li>
-                <li>Earn additional 40 points when you complete a taken job</li>
-                <li>Bonus points awarded for consistent activity</li>
-              </ul>
+            <div className="reviews-grid">
+              {reviews.map(review => (
+                <div key={review.id} className="review-card">
+                  <div className="review-header">
+                    <div className="review-author">
+                      <strong>{review.authorName}</strong>
+                    </div>
+                    <div className="review-rating">
+                      {'★'.repeat(review.rating)}
+                      {'☆'.repeat(5 - review.rating)}
+                    </div>
+                    <div className="review-date">
+                      {new Date(review.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <p className="review-text">{review.text}</p>
+                </div>
+              ))}
+              {reviews.length === 0 && <p>No reviews yet.</p>}
             </div>
           </div>
         )}

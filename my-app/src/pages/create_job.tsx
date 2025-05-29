@@ -9,43 +9,50 @@ export default function CreateJob() {
 
   const [jobName, setJobName] = useState("");
   const [date, setDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState("9:00");
+  const [endTime, setEndTime] = useState("17:00");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("normal");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!startTime || !endTime) {
-      alert("Please select both start and end times.");
+    if (![jobName, date, startTime, endTime, description].every((s) => s.trim())) {
+      alert("Please fill in all fields.");
       return;
     }
-    if (!date) {
-      alert("Please select a date.");
-      return;
-    }
-    const time = `${startTime} - ${endTime}`;
-    if (![jobName, time, description].every((s) => s.trim())) {
-      alert("Please fill in all required fields.");
-      return;
-    }
+
     try {
       const res = await fetch(`http://localhost:8080/api/users/${id}/jobs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobName, time, date, description, status }),
+        body: JSON.stringify({ 
+          jobName, 
+          date,
+          startTime,
+          endTime,
+          description 
+        }),
       });
+
       const payload = await res.json();
       if (!res.ok) {
         throw new Error(payload.message || "Server error");
       }
+
+      console.log("Created job:", payload);
       navigate(`/users/${id}/mainPage`);
-    } catch (err: any) {
-      console.error("Failed to submit:", err);
-      alert("Submission failed: " + err.message);
+    } catch (error: unknown) {
+      console.error("Failed to submit:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      alert("Submission failed: " + errorMessage);
     }
   };
+
+  // Generate time options for the select dropdowns
+  const timeOptions = Array.from({ length: 24 }, (_, i) => {
+    const hour = i.toString().padStart(2, '0');
+    return [`${hour}:00`, `${hour}:30`];
+  }).flat();
 
   return (
     <div className="createjob-wrapper">
@@ -63,6 +70,7 @@ export default function CreateJob() {
               placeholder="Enter job title"
             />
           </div>
+
           <div className="form-group">
             <label htmlFor="date">Date</label>
             <input
@@ -70,46 +78,39 @@ export default function CreateJob() {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              required
+              min={new Date().toISOString().split('T')[0]}
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="time">Time</label>
-            <div className="time-inputs">
-              <div className="time-input-group">
-                <label htmlFor="startTime">Start Time</label>
-                <input
-                  id="startTime"
-                  type="time"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="time-input-group">
-                <label htmlFor="endTime">End Time</label>
-                <input
-                  id="endTime"
-                  type="time"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  required
-                />
-              </div>
+
+          <div className="form-group time-range">
+            <label>Time Range</label>
+            <div className="time-selects">
+              <select
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                className="time-select"
+              >
+                {timeOptions.map(time => (
+                  <option key={`start-${time}`} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
+              <span>to</span>
+              <select
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                className="time-select"
+              >
+                {timeOptions.map(time => (
+                  <option key={`end-${time}`} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="status">Job Status</label>
-            <select
-              id="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="normal">Normal</option>
-              <option value="urgent">Urgent</option>
-              <option value="flexible">Flexible</option>
-            </select>
-          </div>
+
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea
@@ -119,12 +120,8 @@ export default function CreateJob() {
               placeholder="Describe the job"
             ></textarea>
           </div>
-          <div className="button-group">
-            <button type="button" onClick={() => navigate(`/users/${id}/mainPage`)} className="cancel-button">
-              Cancel
-            </button>
-            <button type="submit">Post</button>
-          </div>
+
+          <button type="submit">Post</button>
         </form>
       </div>
     </div>
