@@ -17,6 +17,7 @@ interface JobPost {
   jobName: string;
   description: string;
   status: JobPostStatus;
+  time: string;
 }
 
 interface ConversationContent {
@@ -56,6 +57,10 @@ export default function MyJobs() {
   const [reviewingJob, setReviewingJob] = useState<JobPost | null>(null);
   const [starRating, setStarRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>('');
+
+  const [pickerNames, setPickerNames] = useState<Record<string,string>>({});
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
 
   // Fetch picked-up jobs
   useEffect(() => {
@@ -98,6 +103,11 @@ export default function MyJobs() {
       })
         .then(res => {
           if (!res.ok) throw new Error("Failed to pick up job");
+          setOutgoingJobs(prev =>
+            prev.map(j =>
+              j.id === job.id ? { ...j, status: 'COMPLETED' } : j
+            )
+          );
           setReviewingJob(job);
           // Remove from the available jobs list
           //setJobs(prev => prev.filter(j => j.id !== jobId));
@@ -176,6 +186,61 @@ export default function MyJobs() {
       .catch(err => console.error("Send message error:", err));
   };
 
+  const toggleExpand = (jobId: string) => {
+  setExpanded(prev => {
+    const next = new Set(prev);
+    next.has(jobId) ? next.delete(jobId) : next.add(jobId);
+    return next;
+  });
+};
+
+
+  // sotring jobs
+  const sortedPicked = [...pickedJobs].sort((a, b) =>
+    a.status === 'COMPLETED' && b.status !== 'COMPLETED'
+      ? 1
+      : b.status === 'COMPLETED' && a.status !== 'COMPLETED'
+      ? -1
+      : 0
+  );
+  const sortedOutgoing = [...outgoingJobs].sort((a, b) =>
+    a.status === 'COMPLETED' && b.status !== 'COMPLETED'
+      ? 1
+      : b.status === 'COMPLETED' && a.status !== 'COMPLETED'
+      ? -1
+      : 0
+  );
+
+  
+   // mention user for job
+  useEffect(() => {
+    const ids = outgoingJobs
+      .map(j => j.assignedUserId)
+      .filter((u): u is string => !!u);
+    const unique = Array.from(new Set(ids));
+    Promise.all(
+      unique.map(uid =>
+        fetch(`http://localhost:8080/api/users/${uid}`)
+          .then(r => r.json())
+          .then((u: { id:string, name:string }) => [uid, u.name] as [string,string])
+          .catch(() => [uid, uid] as [string,string])
+      )
+    ).then(entries => setPickerNames(Object.fromEntries(entries)));
+  }, [outgoingJobs]);
+
+  useEffect(() => {
+  const ids = pickedJobs.map(j => j.userId);
+  const unique = Array.from(new Set(ids));
+  Promise.all(
+    unique.map(uid =>
+      fetch(`http://localhost:8080/api/users/${uid}`)
+        .then(r => r.json())
+        .then((u: { id: string; name: string }) => [uid, u.name] as [string,string])
+        .catch(() => [uid, uid] as [string,string])
+    )
+  ).then(entries => setPosterNames(Object.fromEntries(entries)));
+}, [pickedJobs]);
+
   return (
   <div className="page-wrapper">
     <nav className="main-nav">
@@ -205,37 +270,79 @@ export default function MyJobs() {
         </div>
 
         <div className={`jobs-section job-list ${activeTab === 'picked' ? 'active' : ''}`}>
-          {pickedJobs.map(job => (
-            <div key={job.id} className="job-card">
-              <h3>{job.jobName}</h3>
-              <p>{job.description}</p>
-              <div className="status-controls">
-                <button className="status-button" onClick={() => openMessage(job)}>
-                  Message
-                </button>
+          {sortedPicked.map(job => {
+            const isExpanded = expanded.has(job.id);
+            return (
+              <div
+                key={job.id}
+                className={`job-card ${job.status === 'COMPLETED' ? 'completed' : ''}`}
+              >
+                <div
+                  className="job-header"
+                  onClick={() => toggleExpand(job.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <h3>{job.jobName}</h3>
+                  <span className={`chevron ${isExpanded ? 'open' : ''}`}>▾</span>
+                </div>
+                {isExpanded && (
+                  <div className="job-details">
+                    <p><strong>Posted by:</strong> {posterNames[job.userId] || job.userId}</p>
+                    <p>{job.description}</p>
+                    <p><strong>Description:</strong> {job.description}</p>
+                  </div>
+                )}
+                <div className="status-controls">
+                  <button className="status-button" onClick={() => openMessage(job)}>
+                    Message
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-          {pickedJobs.length === 0 && <p>No picked-up jobs.</p>}
+            );
+          })}
         </div>
 
+
         <div className={`jobs-section job-list ${activeTab === 'outgoing' ? 'active' : ''}`}>
-          {outgoingJobs.map(job => (
-            <div key={job.id} className="job-card">
-              <h3>{job.jobName}</h3>
-              <p>{job.description}</p>
-              <div className="status-controls">
-                <button className="status-button" onClick={() => completeJob(job)}>
-                  Complete
-                </button>
-                <button className="status-button" onClick={() => openMessage(job)}>
-                  Message
-                </button>
+          {sortedOutgoing.map(job => {
+            const isExpanded = expanded.has(job.id);
+            return (
+              <div
+                key={job.id}
+                className={`job-card ${job.status === 'COMPLETED' ? 'completed' : ''}`}
+              >
+                <div
+                  className="job-header"
+                  onClick={() => toggleExpand(job.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <h3>{job.jobName}</h3>
+                  <span className={`chevron ${isExpanded ? 'open' : ''}`}>▾</span>
+                </div>
+                {isExpanded && (
+                  <div className="job-details">
+                    <p><strong>Picked up by:</strong> {pickerNames[job.assignedUserId!] || '—'}</p>
+                    <p><strong>Description:</strong> {job.description}</p>
+                    <p>{job.jobName} PLEASE UPDATE ME</p>
+                  </div>
+                )}
+                <div className="status-controls">
+                  {job.status !== 'COMPLETED' && (
+                    <button className="status-button" onClick={() => completeJob(job)}>
+                      Complete
+                    </button>
+                  )}
+                  {job.status !== 'COMPLETED' && (
+                    <button className="status-button" onClick={() => openMessage(job)}>
+                      Message
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-          {outgoingJobs.length === 0 && <p>No outgoing jobs.</p>}
+            );
+          })}
         </div>
+
       </aside>
 
       <section className="main-right"></section>
