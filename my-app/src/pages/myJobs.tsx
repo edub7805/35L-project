@@ -98,6 +98,11 @@ export default function MyJobs() {
       })
         .then(res => {
           if (!res.ok) throw new Error("Failed to pick up job");
+          setOutgoingJobs(prev =>
+            prev.map(j =>
+              j.id === job.id ? { ...j, status: 'COMPLETED' } : j
+            )
+          );
           setReviewingJob(job);
           // Remove from the available jobs list
           //setJobs(prev => prev.filter(j => j.id !== jobId));
@@ -176,6 +181,23 @@ export default function MyJobs() {
       .catch(err => console.error("Send message error:", err));
   };
 
+
+  // sotring jobs
+  const sortedPicked = [...pickedJobs].sort((a, b) =>
+    a.status === 'COMPLETED' && b.status !== 'COMPLETED'
+      ? 1
+      : b.status === 'COMPLETED' && a.status !== 'COMPLETED'
+      ? -1
+      : 0
+  );
+  const sortedOutgoing = [...outgoingJobs].sort((a, b) =>
+    a.status === 'COMPLETED' && b.status !== 'COMPLETED'
+      ? 1
+      : b.status === 'COMPLETED' && a.status !== 'COMPLETED'
+      ? -1
+      : 0
+  );
+
   return (
   <div className="page-wrapper">
     <nav className="main-nav">
@@ -205,8 +227,11 @@ export default function MyJobs() {
         </div>
 
         <div className={`jobs-section job-list ${activeTab === 'picked' ? 'active' : ''}`}>
-          {pickedJobs.map(job => (
-            <div key={job.id} className="job-card">
+          {sortedPicked.map(job => (
+            <div 
+              key={job.id} 
+              className={`job-card ${job.status === 'COMPLETED' ? 'completed' : ''}`}
+            >
               <h3>{job.jobName}</h3>
               <p>{job.description}</p>
               <div className="status-controls">
@@ -216,25 +241,37 @@ export default function MyJobs() {
               </div>
             </div>
           ))}
-          {pickedJobs.length === 0 && <p>No picked-up jobs.</p>}
+          {sortedPicked.length === 0 && <p>No picked-up jobs.</p>}
         </div>
 
         <div className={`jobs-section job-list ${activeTab === 'outgoing' ? 'active' : ''}`}>
-          {outgoingJobs.map(job => (
-            <div key={job.id} className="job-card">
+          {sortedOutgoing.map(job => (
+            <div 
+              key={job.id} 
+              className={`job-card ${job.status === 'COMPLETED' ? 'completed' : ''}`}
+            >
               <h3>{job.jobName}</h3>
               <p>{job.description}</p>
               <div className="status-controls">
-                <button className="status-button" onClick={() => completeJob(job)}>
-                  Complete
-                </button>
-                <button className="status-button" onClick={() => openMessage(job)}>
+                {job.status !== 'COMPLETED' && (
+                  <button
+                    className="status-button"
+                    onClick={() => completeJob(job)}
+                  >
+                    Complete
+                  </button>
+                )}
+                <button
+                  className="status-button"
+                  onClick={() => openMessage(job)}
+                >
                   Message
                 </button>
               </div>
+
             </div>
           ))}
-          {outgoingJobs.length === 0 && <p>No outgoing jobs.</p>}
+          {sortedOutgoing.length === 0 && <p>No outgoing jobs.</p>}
         </div>
       </aside>
 
