@@ -218,21 +218,22 @@ const MainPage: FC = () => {
           <div className="job-list">
             {filtered.map(job => (
               <div key={job.id} className="job-card">
-                <h3
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
-                >
-                  {job.jobName}
+                <div className="job-card-header">
+                  <span className="job-title">{job.jobName}</span>
                   <button
                     onClick={() => handlePickUp(job.id, job.userId)}
-                    className="nav-button">Pick Up</button>
-                </h3>
-                
-                <p>Posted by: {posterNames[job.userId] || job.userId}</p>
-                <p>{job.description}</p>
+                    className="nav-button job-pickup-btn"
+                  >Pick Up</button>
+                </div>
+                <div className="job-card-body">
+                  <p className="job-poster">Posted by: {posterNames[job.userId] || job.userId}</p>
+                  <p className="job-desc">{job.description}</p>
+                  <button
+                    className="nav-button view-profile-btn"
+                    onClick={() => navigate(`/users/${job.userId}/profile`)}
+                    style={{ marginTop: '0.5rem', background: '#fff', color: '#2575fc', border: '1px solid #2575fc' }}
+                  >View Profile</button>
+                </div>
               </div>
             ))}
             {filtered.length === 0 && <p>No jobs found.</p>}

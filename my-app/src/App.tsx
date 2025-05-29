@@ -5,6 +5,7 @@ import CreatePost from './pages/create_job'
 import MainPage from './pages/mainPage'
 import UserStats from './pages/UserStats';
 import MyJobs from './pages/myJobs';
+import UserProfile from './pages/UserProfile';
 
 function App() {
   return (
@@ -30,6 +31,9 @@ function App() {
 
         {/* My Jobs Page */}
         <Route path="/users/:id/myJobs" element={<MyJobs />} />
+
+        {/* User Profile Page */}
+        <Route path="/users/:id/profile" element={<UserProfile />} />
       </Routes>
     </Router>
   );

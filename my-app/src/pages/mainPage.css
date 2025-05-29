@@ -374,3 +374,19 @@ html, body, #root {
     max-width: 300px;
   }
 }
+
+.view-profile-btn {
+  background: #fff !important;
+  color: #2575fc !important;
+  border: 1px solid #2575fc !important;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+.view-profile-btn:hover {
+  background: #eaf2ff !important;
+  color: #174ea6 !important;
+}
+.job-poster, .job-desc {
+  color: #222 !important;
+}
