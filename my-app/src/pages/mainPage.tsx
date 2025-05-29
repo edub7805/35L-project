@@ -256,9 +256,13 @@ const MainPage: FC = () => {
                 <>
                   <p>Average: {userRating.averageRating.toFixed(1)} ★</p>
                   <p>Reviews: {userRating.reviewCount}</p>
+
+                  
+                  {/* --------------------------------------------------------------------------
+                   temporary removal of this button i dont think we need it
                   <button onClick={() => viewReviews()} className="action-button">
                     View Details
-                  </button>
+                  </button>*/}
                 </>
               ) : (
                 <p>Loading…</p>
