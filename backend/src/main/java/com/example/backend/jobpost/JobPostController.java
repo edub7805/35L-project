@@ -79,7 +79,7 @@ public class JobPostController {
     @PostMapping("/users/{userId}/jobs")
     @ResponseStatus(HttpStatus.CREATED)
     public JobPost create(
-            @PathVariable String userId,
+             @PathVariable String userId,
             @Valid @RequestBody CreateJobRequest dto
     ) {
         return service.create(userId, dto);
