@@ -117,6 +117,10 @@ export default function Login() {
     navigate('/signup');
   };
 
+  const handleForgotPassword = () => {
+    navigate('/signup');
+  }
+
   return (
     <div className="login-container">
       <div className="login-left" ref={containerRef}>
@@ -161,7 +165,7 @@ export default function Login() {
 
             <div className="form-options">
               <label><input type="checkbox" /> Remember me</label>
-              <a href="#">Forgot Password?</a>
+              <a href="#" onClick={handleForgotPassword} >Forgot Password?</a>
             </div>
 
             <button type="submit">Sign In</button>
