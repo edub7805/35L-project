@@ -1,0 +1,159 @@
+/* Tabs for switching between Picked Up and Outgoing */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  margin: 1rem 0;
+}
+.tab-button {
+  flex: 1;
+  padding: 0.75rem;
+  background: #fff;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  color: black
+}
+.tab-button.active {
+  border-bottom-color: var(--color-action);
+  color: black
+}
+
+/* Section wrappers */
+.jobs-section {
+  display: none;
+}
+.jobs-section.active {
+  display: block;
+}
+
+/* Reuse .job-list styling for scrollable lists */
+.jobs-section.job-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  margin: 0;
+}
+
+/* Status display and update controls */
+.job-status {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--color-text);
+}
+.status-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.status-button {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid var(--color-action);
+  background-color: var(--color-action);
+  color: #fff;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.status-button:hover {
+  background-color: var(--color-action-hover);
+  border-color: var(--color-action-hover);
+}
+
+/* Message‐modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* The white modal box */
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  color: black;
+}
+
+/* Header */
+.modal-content h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+/* Scrollable message list */
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  color : black;
+}
+
+/* Individual message bubbles */
+.message-item {
+  margin: 0.5rem 0;
+}
+.message-item strong {
+  margin-right: 0.25rem;
+}
+
+/* Textarea for new message */
+.message-input {
+  width: 100%;
+  resize: none;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Send button */
+.send-button {
+  align-self: flex-end;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-action);
+  color: #fff;
+  border: 1px solid var(--color-action);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.send-button:hover {
+  background-color: var(--color-action-hover);
+  border-color: var(--color-action-hover);
+}
+
+.star-rating {
+  display: flex;
+  font-size: 2rem;
+  margin: 0.5rem 0;
+  cursor: pointer;
+}
+.star {
+  color: #ccc;
+  transition: color 0.2s;
+}
+.star.filled {
+  color: gold;
+}
+
+.job-card.completed {
+  opacity: 0.5;
+  background-color: #f9f9f9;
+}

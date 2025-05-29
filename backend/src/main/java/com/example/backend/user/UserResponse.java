@@ -1,5 +1,5 @@
-package com.example.backend.user;
-
+package com.example.backend;
+import com.example.backend.user.User;
 public class UserResponse {
     private String id;
     private String name;

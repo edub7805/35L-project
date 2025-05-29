@@ -19,14 +19,17 @@ public class User {
 
     @Id
     private String id;
-
     private String name;
     private String email;
     private String password;
 
+    private int    reviewCount   = 0;
+    private int    ratingSum     = 0;
+    private double averageRating = 0.0;
+
     public User() {}
 
-    public User(String name, String email, String password) {
+    public User(String id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -35,6 +38,7 @@ public class User {
 
     // Getters and setters
     public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -44,4 +48,15 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public int getReviewCount() { return reviewCount; }
+    public void setReviewCount(int reviewCount) { this.reviewCount = reviewCount; }
+
+    public int getRatingSum() { return ratingSum; }
+    public void setRatingSum(int ratingSum) { this.ratingSum = ratingSum; }
+
+    public double getAverageRating() { return averageRating; }
+    public void setAverageRating(double averageRating) { this.averageRating = averageRating; }
 }
+
+
