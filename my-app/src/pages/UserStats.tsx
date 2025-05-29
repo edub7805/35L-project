@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './UserStats.css';
 
+// runtime property for user data
 interface UserData {
   id: string;
   name: string;
+}
+//User rating similar to seen in mainPage
+interface UserRating {
   reviewCount: number;
   ratingSum: number;
   averageRating: number;
 }
-
+// review similar to seen in page
 interface Review {
   id: string;
   jobId: string;
@@ -26,22 +30,32 @@ interface JobHistory {
   date: string;
   startTime: string;
   endTime: string;
-  status: 'OPEN' | 'IN_PROGRESS' | 'COMPLETED';
+  status: 'OPEN' | 'IN_PROGRESS' | 'COMPLETED'; // I like this addition to add the different type
   description: string;
 }
 
 const UserStats: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [userData, setUserData] = useState<UserData | null>(null);
+
+  // Basic profile info
+  const [userData, setUserData] = useState<UserData>({ id: '', name: '' });
+
+  // Rating summary pulled from /api/users/:id/rating
+  const [userRating, setUserRating] = useState<UserRating | null>(null);
+
+  // Detailed reviews
   const [reviews, setReviews] = useState<Review[]>([]);
+
+  // Job history
   const [jobsPosted, setJobsPosted] = useState<JobHistory[]>([]);
   const [jobsTaken, setJobsTaken] = useState<JobHistory[]>([]);
+
+  // UI state
   const [activeTab, setActiveTab] = useState<'posted' | 'taken' | 'reviews'>('posted');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch user data
   useEffect(() => {
     if (!id) {
       navigate('/login');
@@ -51,48 +65,54 @@ const UserStats: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
+
       try {
-        // Fetch user data
+        // 1) Fetch basic user info
         const userRes = await fetch(`http://localhost:8080/api/users/${id}`);
         if (!userRes.ok) throw new Error('Failed to fetch user data');
-        const userData = await userRes.json();
-        setUserData(userData);
+        const userJson = await userRes.json();
+        setUserData({ id: userJson.id, name: userJson.name });
 
-        // Fetch user reviews with author names
+        // 2) Fetch rating summary
+        const ratingRes = await fetch(`http://localhost:8080/api/users/${id}/rating`);
+        if (!ratingRes.ok) throw new Error('Failed to fetch rating summary');
+        const ratingJson: UserRating = await ratingRes.json();
+        setUserRating(ratingJson);
+
+        // 3) Fetch detailed reviews
         const reviewsRes = await fetch(`http://localhost:8080/api/users/${id}/reviews`);
         if (!reviewsRes.ok) throw new Error('Failed to fetch reviews');
-        const reviewsData = await reviewsRes.json();
-        
-        // Fetch author names for each review
-        const reviewsWithAuthors = await Promise.all(
-          reviewsData.map(async (review: Review) => {
+        const reviewsJson: Review[] = await reviewsRes.json();
+
+        // Enrich each review with authorName
+        const reviewsWithNames = await Promise.all(
+          reviewsJson.map(async r => {
             try {
-              const authorRes = await fetch(`http://localhost:8080/api/users/${review.authorId}`);
-              if (!authorRes.ok) throw new Error('Failed to fetch author');
-              const authorData = await authorRes.json();
-              return { ...review, authorName: authorData.name };
-            } catch (err) {
-              console.error('Error fetching author name:', err);
-              return { ...review, authorName: 'Unknown User' };
+              const authorRes = await fetch(`http://localhost:8080/api/users/${r.authorId}`);
+              if (!authorRes.ok) throw new Error();
+              const authorJson = await authorRes.json();
+              return { ...r, authorName: authorJson.name };
+            } catch {
+              return { ...r, authorName: 'Unknown User' };
             }
           })
         );
-        setReviews(reviewsWithAuthors);
+        setReviews(reviewsWithNames);
 
-        // Fetch posted jobs
+        // 4) Fetch job history: posted
         const postedRes = await fetch(`http://localhost:8080/api/users/${id}/jobs`);
         if (!postedRes.ok) throw new Error('Failed to fetch posted jobs');
-        const postedData = await postedRes.json();
-        setJobsPosted(postedData);
+        const postedJson: JobHistory[] = await postedRes.json();
+        setJobsPosted(postedJson);
 
-        // Fetch taken jobs
+        // 5) Fetch job history: taken
         const takenRes = await fetch(`http://localhost:8080/api/users/${id}/assigned-jobs`);
         if (!takenRes.ok) throw new Error('Failed to fetch taken jobs');
-        const takenData = await takenRes.json();
-        setJobsTaken(takenData);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        const takenJson: JobHistory[] = await takenRes.json();
+        setJobsTaken(takenJson);
+      } catch (e) {
+        console.error(e);
+        setError(e instanceof Error ? e.message : 'An unknown error occurred');
       } finally {
         setIsLoading(false);
       }
@@ -135,9 +155,11 @@ const UserStats: React.FC = () => {
           <h1>User Statistics</h1>
         </div>
         <div className="user-info">
-          <h2>{userData?.name || 'Loading...'}</h2>
+          <h2>{userData.name}</h2>
           <div className="rating-badge">
-            {userData?.averageRating ? `${userData.averageRating.toFixed(1)} ★` : 'No ratings yet'}
+            {userRating
+              ? `${userRating.averageRating.toFixed(1)} ★ (${userRating.reviewCount})`
+              : 'No ratings yet'}
           </div>
         </div>
       </header>
@@ -152,26 +174,26 @@ const UserStats: React.FC = () => {
           <div className="stat-label">Jobs Taken</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">{userData?.reviewCount || 0}</div>
+          <div className="stat-number">{userRating?.reviewCount || 0}</div>
           <div className="stat-label">Total Reviews</div>
         </div>
       </div>
 
       <div className="stats-tabs">
-        <button 
-          className={activeTab === 'posted' ? 'active' : ''} 
+        <button
+          className={activeTab === 'posted' ? 'active' : ''}
           onClick={() => setActiveTab('posted')}
         >
           Jobs Posted
         </button>
-        <button 
-          className={activeTab === 'taken' ? 'active' : ''} 
+        <button
+          className={activeTab === 'taken' ? 'active' : ''}
           onClick={() => setActiveTab('taken')}
         >
           Jobs Taken
         </button>
-        <button 
-          className={activeTab === 'reviews' ? 'active' : ''} 
+        <button
+          className={activeTab === 'reviews' ? 'active' : ''}
           onClick={() => setActiveTab('reviews')}
         >
           Reviews
@@ -200,7 +222,9 @@ const UserStats: React.FC = () => {
                     <td>{`${job.startTime} - ${job.endTime}`}</td>
                     <td>
                       <span className={`status-badge ${job.status.toLowerCase()}`}>
-                        {job.status}
+                        {job.status === 'COMPLETED' ? 'Completed' : //conditionals in html is absolutely foul
+                         job.status === 'IN_PROGRESS' ? 'In Progress' :
+                                                         'Open'}
                       </span>
                     </td>
                     <td>{job.description}</td>
@@ -232,7 +256,9 @@ const UserStats: React.FC = () => {
                     <td>{`${job.startTime} - ${job.endTime}`}</td>
                     <td>
                       <span className={`status-badge ${job.status.toLowerCase()}`}>
-                        {job.status}
+                        {job.status === 'COMPLETED' ? 'Completed' : //conditionals in html is absolutely foul
+                         job.status === 'IN_PROGRESS' ? 'In Progress' :
+                                                         'Open'}
                       </span>
                     </td>
                     <td>{job.description}</td>
@@ -247,28 +273,37 @@ const UserStats: React.FC = () => {
           <div className="reviews-list">
             <h3>Reviews Received</h3>
             <div className="reviews-summary">
-              <p><strong>Average Rating:</strong> {userData?.averageRating.toFixed(1) || '0.0'} ★</p>
-              <p><strong>Total Reviews:</strong> {userData?.reviewCount || 0}</p>
+              <p>
+                <strong>Average Rating:</strong>{' '}
+                {userRating ? userRating.averageRating.toFixed(1) : '0.0'} ★
+              </p>
+              <p>
+                <strong>Total Reviews:</strong>{' '}
+                {userRating?.reviewCount || 0}
+              </p>
             </div>
             <div className="reviews-grid">
-              {reviews.map(review => (
-                <div key={review.id} className="review-card">
-                  <div className="review-header">
-                    <div className="review-author">
-                      <strong>{review.authorName}</strong>
+              {reviews.length ? (
+                reviews.map(review => (
+                  <div key={review.id} className="review-card">
+                    <div className="review-header">
+                      <div className="review-author">
+                        <strong>{review.authorName}</strong>
+                      </div>
+                      <div className="review-rating">
+                        {'★'.repeat(review.rating)}
+                        {'☆'.repeat(5 - review.rating)}
+                      </div>
+                      <div className="review-date">
+                        {new Date(review.createdAt).toLocaleDateString()}
+                      </div>
                     </div>
-                    <div className="review-rating">
-                      {'★'.repeat(review.rating)}
-                      {'☆'.repeat(5 - review.rating)}
-                    </div>
-                    <div className="review-date">
-                      {new Date(review.createdAt).toLocaleDateString()}
-                    </div>
+                    <p className="review-text">{review.text}</p>
                   </div>
-                  <p className="review-text">{review.text}</p>
-                </div>
-              ))}
-              {reviews.length === 0 && <p>No reviews yet.</p>}
+                ))
+              ) : (
+                <p>No reviews yet.</p>
+              )}
             </div>
           </div>
         )}
@@ -277,4 +312,4 @@ const UserStats: React.FC = () => {
   );
 };
 
-export default UserStats; 
+export default UserStats;
