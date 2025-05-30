@@ -340,8 +340,26 @@ export default function MyJobs() {
 
       {/* Message Modal */}
       {modalJob && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={closeModal}>
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+        <div 
+          className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-50" 
+          onClick={closeModal}
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            minHeight: '100vh',
+            minWidth: '100vw'
+          }}
+        >
+          <div 
+            className="bg-white rounded-lg p-6 mx-4 flex flex-col" 
+            onClick={e => e.stopPropagation()}
+            style={{ 
+              width: '600px',
+              maxWidth: '90vw',
+              maxHeight: '80vh'
+            }}
+          >
             <h2 className="text-2xl font-bold mb-4 text-gray-900">Conversation</h2>
             <div className="flex-1 overflow-y-auto border border-gray-300 rounded p-4 mb-4 bg-gray-50">
               {messages.length === 0 ? (
