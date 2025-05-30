@@ -76,6 +76,26 @@ button:focus-visible {
 }
 
 @layer base {
+  /* Force light mode - disable dark mode entirely */
+  html {
+    color-scheme: light only !important;
+  }
+  
+  *, *::before, *::after {
+    color-scheme: light only !important;
+  }
+  
+  /* Force white backgrounds regardless of system preferences */
+  body, html, #root {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  /* Force page backgrounds to be white */
+  .bg-white {
+    background-color: white !important;
+  }
+  
   * {
     font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   }
@@ -102,6 +122,16 @@ button:focus-visible {
     margin: 0;
     font: inherit;
     cursor: pointer;
+  }
+
+  /* Force tab buttons to have white backgrounds */
+  button[class*="flex-1"][class*="py-3"][class*="px-4"] {
+    background-color: white !important;
+  }
+  
+  /* Force any elements that might be affected by dark mode */
+  .border-b, .border-b-2 {
+    background-color: white !important;
   }
 }
 
@@ -143,6 +173,19 @@ button:focus-visible {
   .search-icon-bg {
     background: #f7f9fc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23999999' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") no-repeat 8px center;
     background-size: 16px 16px;
+  }
+  
+  /* Remove search icon when focused or has content */
+  .search-icon-bg:focus,
+  .search-icon-bg:not(:placeholder-shown) {
+    background-image: none !important;
+    padding-left: 12px;
+  }
+  
+  /* Remove placeholder text when focused */
+  .search-icon-bg:focus::placeholder {
+    opacity: 0 !important;
+    color: transparent !important;
   }
   
   /* Resizable divider with pseudo-element */
@@ -338,9 +381,9 @@ button:focus-visible {
     font-weight: 500;
     width: 120px;
     box-sizing: border-box;
-    background-color: white;
-    color: #2575fc;
-    border: 2px solid #2575fc;
+    background-color: white !important;
+    color: #2575fc !important;
+    border: 2px solid #2575fc !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     overflow: hidden;
   }
@@ -357,9 +400,9 @@ button:focus-visible {
   }
 
   .view-profile-btn:hover {
-    background-color: #f0f8ff;
-    color: #1861d9;
-    border-color: #1861d9;
+    background-color: #f0f8ff !important;
+    color: #1861d9 !important;
+    border-color: #1861d9 !important;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   }
 
@@ -376,9 +419,9 @@ button:focus-visible {
     transition: all 0.3s ease;
     font-weight: 600;
     font-size: 1rem;
-    background-color: white;
-    border: 2px solid #2575fc;
-    color: #2575fc;
+    background-color: white !important;
+    border: 2px solid #2575fc !important;
+    color: #2575fc !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     overflow: hidden;
   }
@@ -395,9 +438,9 @@ button:focus-visible {
   }
 
   .illuminated-button:hover {
-    background-color: #f0f8ff;
-    border-color: #1861d9;
-    color: #1861d9;
+    background-color: #f0f8ff !important;
+    border-color: #1861d9 !important;
+    color: #1861d9 !important;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     transform: translateY(-1px);
   }
@@ -422,9 +465,9 @@ button:focus-visible {
     font-size: 0.875rem;
     width: 120px;
     box-sizing: border-box;
-    background-color: white;
-    border: 2px solid #2575fc;
-    color: #2575fc;
+    background-color: white !important;
+    border: 2px solid #2575fc !important;
+    color: #2575fc !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     overflow: hidden;
   }
@@ -441,9 +484,9 @@ button:focus-visible {
   }
 
   .illuminated-button-sm:hover {
-    background-color: #f0f8ff;
-    border-color: #1861d9;
-    color: #1861d9;
+    background-color: #f0f8ff !important;
+    border-color: #1861d9 !important;
+    color: #1861d9 !important;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     transform: translateY(-1px);
   }
