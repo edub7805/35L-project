@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "./myJobs.css";
+// import "./myJobs.css";
 
 // Job and user types
 type JobPostStatus = 'DRAFT' | 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
@@ -190,105 +190,236 @@ export default function MyJobs() {
   );
 
   return (
-    <div className="page-wrapper">
-      <nav className="main-nav">
-        <div className="logo"><strong>Sixxer</strong></div>
+    <div className="flex flex-col min-h-screen w-full overflow-x-hidden bg-white font-sans">
+      <nav className="flex justify-between items-center px-8 py-4 text-white w-full" style={{ background: 'linear-gradient(90deg, #6a11cb, #2575fc)' }}>
+        <div className="sixxer-logo">Sixxer</div>
         <div className="nav-buttons">
-          <button onClick={() => navigate(-1)} className="nav-button">Back</button>
+          <button onClick={() => navigate(-1)} className="nav-button-flush">Back</button>
         </div>
       </nav>
-      <div className="main-page-container">
-        <aside className="main-left">
-          <div className="left-banner"><h2>My Jobs</h2></div>
-          <div className="tabs">
-            <button className={`tab-button ${activeTab==='picked'?'active':''}`} onClick={()=>handleTabClick('picked')}>
+      <div className="flex flex-1 w-full overflow-hidden">
+        <aside className="flex flex-col w-full max-w-4xl mx-auto p-8">
+          <div className="mb-6">
+            <h2 className="relative pb-1 mb-6 text-black text-3xl font-bold">
+              My Jobs
+              <div className="gradient-accent-line"></div>
+            </h2>
+          </div>
+          <div className="flex border-b border-gray-300 mb-6">
+            <button 
+              className={`flex-1 py-3 px-4 text-base font-medium transition-all duration-200 border-b-2 ${
+                activeTab === 'picked' 
+                  ? 'border-blue-600 text-blue-600' 
+                  : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+              onClick={() => handleTabClick('picked')}
+            >
               My Picked Up Jobs
             </button>
-            <button className={`tab-button ${activeTab==='outgoing'?'active':''}`} onClick={()=>handleTabClick('outgoing')}>
+            <button 
+              className={`flex-1 py-3 px-4 text-base font-medium transition-all duration-200 border-b-2 ${
+                activeTab === 'outgoing' 
+                  ? 'border-blue-600 text-blue-600' 
+                  : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+              onClick={() => handleTabClick('outgoing')}
+            >
               My Outgoing Jobs
             </button>
           </div>
 
-          {/* Picked-Up */}
-          <div className={`jobs-section job-list ${activeTab==='picked'?'active':''}`}>
-            {sortedPicked.map(job => {
-              const isExpanded = expanded.has(job.id);
-              return (
-                <div key={job.id} className={`job-card ${job.status==='COMPLETED'?'completed':''}`}>
-                  <div className="job-header" onClick={()=>toggleExpand(job.id)} style={{cursor:'pointer'}}>
-                    <h3>{job.jobName}</h3>
-                    <span className={`chevron ${isExpanded?'open':''}`}>▾</span>
-                  </div>
-                  {isExpanded && (
-                    <div className="job-details">
-                      <p><strong>Date:</strong> {job.date}</p>
-                      <p><strong>Time:</strong> {job.startTime} – {job.endTime}</p>
-                      <p><strong>Posted by:</strong> {posterNames[job.userId]||job.userId}</p>
-                      <p><strong>Description:</strong> {job.description}</p>
+          {/* Picked-Up Jobs */}
+          <div className={`${activeTab === 'picked' ? 'block' : 'hidden'}`}>
+            <div className="space-y-4">
+              {sortedPicked.map(job => {
+                const isExpanded = expanded.has(job.id);
+                return (
+                  <div key={job.id} className={`job-card ${job.status === 'COMPLETED' ? 'opacity-50' : ''}`}>
+                    <div className="flex-1">
+                      {/* Job Title */}
+                      <div 
+                        className="flex items-center justify-between cursor-pointer mb-3"
+                        onClick={() => toggleExpand(job.id)}
+                      >
+                        <h3 className="text-2xl font-bold text-gray-900 leading-tight">{job.jobName}</h3>
+                        <span className={`text-gray-400 text-xl transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`}>
+                          ▾
+                        </span>
+                      </div>
+                      
+                      {/* Poster Info */}
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Posted by</p>
+                        <p className="text-lg font-semibold text-gray-800">{posterNames[job.userId] || job.userId}</p>
+                      </div>
+                      
+                      {isExpanded && (
+                        <div className="space-y-3">
+                          {/* Description */}
+                          <div className="mb-4">
+                            <p className="text-gray-700 leading-relaxed text-base">{job.description}</p>
+                          </div>
+                          
+                          {/* Additional Details */}
+                          <div className="space-y-2 text-gray-700">
+                            <p><span className="font-semibold">Date:</span> {job.date}</p>
+                            <p><span className="font-semibold">Time:</span> {job.startTime} – {job.endTime}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div className="status-controls">
-                    <button className="status-button" onClick={()=>openMessage(job)}>Message</button>
+                    <div className="job-card-actions">
+                      <button className="view-profile-btn" onClick={() => openMessage(job)}>
+                        Message
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
-          {/* Outgoing */}
-          <div className={`jobs-section job-list ${activeTab==='outgoing'?'active':''}`}>
-            {sortedOutgoing.map(job => {
-              const isExpanded = expanded.has(job.id);
-              return (
-                <div key={job.id} className={`job-card ${job.status==='COMPLETED'?'completed':''}`}>
-                  <div className="job-header" onClick={()=>toggleExpand(job.id)} style={{cursor:'pointer'}}>
-                    <h3>{job.jobName}</h3>
-                    <span className={`chevron ${isExpanded?'open':''}`}>▾</span>
-                  </div>
-                  {isExpanded && (
-                    <div className="job-details">
-                      <p><strong>Date:</strong> {job.date}</p>
-                      <p><strong>Time:</strong> {job.startTime} – {job.endTime}</p>
-                      <p><strong>Picked up by:</strong> {pickerNames[job.assignedUserId!]||'—'}</p>
-                      <p><strong>Description:</strong> {job.description}</p>
+          {/* Outgoing Jobs */}
+          <div className={`${activeTab === 'outgoing' ? 'block' : 'hidden'}`}>
+            <div className="space-y-4">
+              {sortedOutgoing.map(job => {
+                const isExpanded = expanded.has(job.id);
+                return (
+                  <div key={job.id} className={`job-card ${job.status === 'COMPLETED' ? 'opacity-50' : ''}`}>
+                    <div className="flex-1">
+                      {/* Job Title */}
+                      <div 
+                        className="flex items-center justify-between cursor-pointer mb-3"
+                        onClick={() => toggleExpand(job.id)}
+                      >
+                        <h3 className="text-2xl font-bold text-gray-900 leading-tight">{job.jobName}</h3>
+                        <span className={`text-gray-400 text-xl transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`}>
+                          ▾
+                        </span>
+                      </div>
+                      
+                      {/* Picker Info */}
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Picked up by</p>
+                        <p className="text-lg font-semibold text-gray-800">{pickerNames[job.assignedUserId!] || '—'}</p>
+                      </div>
+                      
+                      {isExpanded && (
+                        <div className="space-y-3">
+                          {/* Description */}
+                          <div className="mb-4">
+                            <p className="text-gray-700 leading-relaxed text-base">{job.description}</p>
+                          </div>
+                          
+                          {/* Additional Details */}
+                          <div className="space-y-2 text-gray-700">
+                            <p><span className="font-semibold">Date:</span> {job.date}</p>
+                            <p><span className="font-semibold">Time:</span> {job.startTime} – {job.endTime}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div className="status-controls">
-                    {job.status!=='COMPLETED' && <button className="status-button" onClick={()=>completeJob(job)}>Complete</button>}
-                    {<button className="status-button" onClick={()=>openMessage(job)}>Message</button>}
+                    <div className="job-card-actions">
+                      {job.status !== 'COMPLETED' && (
+                        <button className="illuminated-button-sm" onClick={() => completeJob(job)}>
+                          Complete
+                        </button>
+                      )}
+                      <button className="view-profile-btn" onClick={() => openMessage(job)}>
+                        Message
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </aside>
-        <section className="main-right"></section>
+        <section className="flex-1"></section>
       </div>
 
       {/* Message Modal */}
       {modalJob && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={e=>e.stopPropagation()}>
-            <h2>Conversation</h2>
-            <div className="message-list">
-              {messages.length===0? <p>No messages yet.</p> :
-                messages.map((m,i)=>(<div key={i} className="message-item"><strong>{m.senderId===id? 'You:' : 'Them:'}</strong> {m.content}</div>))
-              }
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={closeModal}>
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Conversation</h2>
+            <div className="flex-1 overflow-y-auto border border-gray-300 rounded p-4 mb-4 bg-gray-50">
+              {messages.length === 0 ? (
+                <p className="text-gray-600">No messages yet.</p>
+              ) : (
+                messages.map((m, i) => (
+                  <div key={i} className="mb-3 text-gray-700">
+                    <span className="font-semibold text-gray-900">
+                      {m.senderId === id ? 'You:' : 'Them:'}
+                    </span> {m.content}
+                  </div>
+                ))
+              )}
             </div>
-            <textarea className="message-input" rows={3} placeholder="Type a message..." value={newMessage} onChange={e=>setNewMessage(e.target.value)}/>
-            <button className="send-button" onClick={handleSend}>Send</button>
+            <textarea 
+              className="w-full resize-none p-3 border border-gray-300 rounded mb-4 text-base focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_2px_rgba(37,117,252,0.2)]"
+              rows={3} 
+              placeholder="Type a message..." 
+              value={newMessage} 
+              onChange={e => setNewMessage(e.target.value)}
+            />
+            <button className="illuminated-button self-end" onClick={handleSend}>
+              Send
+            </button>
           </div>
         </div>
       )}
 
       {/* Review Modal */}
       {reviewingJob && (
-        <div className="modal-overlay" onClick={closeReviewModal}>
-          <div className="modal-content" onClick={e=>e.stopPropagation()}>
-            <h2>How did they do?</h2>
-            <div className="star-rating">{[1,2,3,4,5].map(n=>(<span key={n} className={`star ${n<=starRating?'filled':''}`} onClick={()=>setStarRating(n)}>★</span>))}</div>
-            <textarea className="message-input" rows={3} placeholder="Write your review..." value={reviewText} onChange={e=>setReviewText(e.target.value)}/>
-            <button className="send-button" onClick={submitReview}>Submit Review</button>
+        <div 
+          className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 z-50" 
+          onClick={closeReviewModal}
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            minHeight: '100vh',
+            minWidth: '100vw'
+          }}
+        >
+          <div 
+            className="bg-white rounded-lg p-6 mx-4" 
+            onClick={e => e.stopPropagation()}
+            style={{ 
+              width: '400px',
+              maxWidth: '90vw'
+            }}
+          >
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 text-center">How did they do?</h2>
+            <div className="mb-6">
+              <div className="flex justify-center gap-2 text-4xl">
+                {[1, 2, 3, 4, 5].map(n => (
+                  <button
+                    key={n} 
+                    type="button"
+                    className={`p-2 transition-colors duration-200 ${n <= starRating ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-300`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setStarRating(n);
+                    }}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            </div>
+            <textarea 
+              className="w-full resize-none p-3 border border-gray-300 rounded mb-6 text-base focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_2px_rgba(37,117,252,0.2)]"
+              rows={4} 
+              placeholder="Write your review..." 
+              value={reviewText} 
+              onChange={e => setReviewText(e.target.value)}
+            />
+            <button className="illuminated-button w-full" onClick={submitReview}>
+              Submit Review
+            </button>
           </div>
         </div>
       )}
