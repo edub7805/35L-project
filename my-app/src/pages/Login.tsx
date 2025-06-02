@@ -10,7 +10,7 @@ type Job = {
 };
 
 export default function Login() {
-  const placeholders = ['placeholder'];
+  const placeholders = ['SIXXER'];
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [nextIdx, setNextIdx] = useState(0);
@@ -33,7 +33,7 @@ export default function Login() {
 
       // approximate popup size (tweak if yours differs)
       const popupWidth  = 120; // px
-      const popupHeight = 30;  // px
+      const popupHeight = 40;  // px
 
       let topPct: number;
       let leftPct: number;
@@ -66,7 +66,7 @@ export default function Login() {
       setTimeout(() => {
         setJobs(js => js.filter(j => j.id !== id));
       }, 5000);
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [nextIdx, placeholders]);
@@ -125,7 +125,7 @@ export default function Login() {
     <div className="login-container">
       <div className="login-left" ref={containerRef}>
         <div className="quote-box" ref={quoteRef}>
-          <p className="quote-label">Six'err</p>
+          <p className="quote-label">Sixxer®</p>
           <h2 className="quote-title">Release your tension</h2>
           <p className="quote-sub">You worked hard didn't you</p>
         </div>
