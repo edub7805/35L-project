@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html, body, #root {
   height: 100%;
   margin: 0;
@@ -5,14 +10,11 @@ html, body, #root {
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -70,5 +72,431 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@layer base {
+  /* Force light mode - disable dark mode entirely */
+  html {
+    color-scheme: light only !important;
+  }
+  
+  *, *::before, *::after {
+    color-scheme: light only !important;
+  }
+  
+  /* Force white backgrounds regardless of system preferences */
+  body, html, #root {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  /* Force page backgrounds to be white */
+  .bg-white {
+    background-color: white !important;
+  }
+  
+  * {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  }
+  
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: block;
+    min-width: 100%;
+  }
+
+  /* Reset default button styling */
+  button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  /* Force tab buttons to have white backgrounds */
+  button[class*="flex-1"][class*="py-3"][class*="px-4"] {
+    background-color: white !important;
+  }
+  
+  /* Force any elements that might be affected by dark mode */
+  .border-b, .border-b-2 {
+    background-color: white !important;
+  }
+}
+
+@layer components {
+  /* Sixxer logo styling */
+  .sixxer-logo {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 
+      0 0 5px rgba(255, 255, 255, 0.4),
+      0 0 10px rgba(255, 255, 255, 0.3),
+      0 0 15px rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .sixxer-logo:hover {
+    text-shadow: 
+      0 0 8px rgba(255, 255, 255, 0.6),
+      0 0 15px rgba(255, 255, 255, 0.4),
+      0 0 20px rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+  }
+
+  /* Gradient accent line for headers */
+  .gradient-accent-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 2.5rem;
+    height: 0.25rem;
+    border-radius: 0.125rem;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+  }
+  
+  /* Search input with icon background */
+  .search-icon-bg {
+    background: #f7f9fc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23999999' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85zm-5.242 1.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") no-repeat 8px center;
+    background-size: 16px 16px;
+  }
+  
+  /* Remove search icon when focused or has content */
+  .search-icon-bg:focus,
+  .search-icon-bg:not(:placeholder-shown) {
+    background-image: none !important;
+    padding-left: 12px;
+  }
+  
+  /* Remove placeholder text when focused */
+  .search-icon-bg:focus::placeholder {
+    opacity: 0 !important;
+    color: transparent !important;
+  }
+  
+  /* Resizable divider with pseudo-element */
+  .resizable-divider {
+    width: 8px;
+    background-color: #d1d5db;
+    cursor: col-resize;
+    position: relative;
+    user-select: none;
+    transition: background-color 0.2s ease;
+  }
+  .resizable-divider:hover,
+  .resizable-divider.dragging {
+    background-color: #2575fc;
+  }
+  .resizable-divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0.125rem;
+    height: 2rem;
+    background-color: white;
+    border-radius: 0.125rem;
+  }
+  
+  /* Action box with gradient top border */
+  .action-box {
+    position: relative;
+    text-align: center;
+    padding: 2rem;
+    width: 300px;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    background-color: white;
+  }
+  .action-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0.375rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+  }
+  
+  /* Navigation buttons */
+  .nav-button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+    background-color: #2575fc !important;
+    border: 2px solid #1861d9 !important;
+    color: white !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+  .nav-button:hover {
+    background-color: #1861d9 !important;
+    border-color: #0f4cb8 !important;
+    color: white !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+  
+  /* Flush navigation buttons - transparent by default, styled on hover */
+  .nav-button-flush {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    background-color: transparent !important;
+    border: 2px solid transparent !important;
+    color: white !important;
+    box-shadow: none !important;
+    overflow: hidden;
+  }
+
+  .nav-button-flush::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+  }
+
+  .nav-button-flush:hover {
+    background-color: white !important;
+    border-color: #2575fc !important;
+    color: #2575fc !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;
+    transform: translateY(-1px);
+  }
+
+  .nav-button-flush:hover::before {
+    left: 100%;
+  }
+  
+  /* Action buttons */
+  .action-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+    background-color: #2575fc !important;
+    border: 2px solid #1861d9 !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
+  }
+  .action-button:hover {
+    background-color: #1861d9 !important;
+    border-color: #0f4cb8 !important;
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.23);
+  }
+  
+  /* Job card styling */
+  .job-card {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: 160px;
+    padding: 2rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      0 0 0 1px rgba(59, 130, 246, 0.05);
+    transition: all 0.3s ease;
+    color: black;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .job-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .job-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      0 10px 25px -3px rgba(0, 0, 0, 0.1), 
+      0 4px 6px -2px rgba(0, 0, 0, 0.05),
+      0 0 0 1px rgba(59, 130, 246, 0.1);
+    border-color: #cbd5e1;
+  }
+
+  .job-card:hover::before {
+    opacity: 1;
+  }
+  
+  /* Job card actions */
+  .job-card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    margin-left: 1.5rem;
+    justify-content: flex-start;
+    min-width: 120px;
+    align-self: flex-start;
+  }
+
+  /* View profile button - keep current style */
+  .view-profile-btn {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+    width: 120px;
+    box-sizing: border-box;
+    background-color: white !important;
+    color: #2575fc !important;
+    border: 2px solid #2575fc !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+  }
+
+  .view-profile-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(37, 117, 252, 0.1), transparent);
+    transition: left 0.5s;
+  }
+
+  .view-profile-btn:hover {
+    background-color: #f0f8ff !important;
+    color: #1861d9 !important;
+    border-color: #1861d9 !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+
+  .view-profile-btn:hover::before {
+    left: 100%;
+  }
+
+  /* Special illuminated buttons for Pick Up and Create Job */
+  .illuminated-button {
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 1rem;
+    background-color: white !important;
+    border: 2px solid #2575fc !important;
+    color: #2575fc !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+  }
+
+  .illuminated-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(37, 117, 252, 0.1), transparent);
+    transition: left 0.5s;
+  }
+
+  .illuminated-button:hover {
+    background-color: #f0f8ff !important;
+    border-color: #1861d9 !important;
+    color: #1861d9 !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    transform: translateY(-1px);
+  }
+
+  .illuminated-button:hover::before {
+    left: 100%;
+  }
+
+  .illuminated-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  }
+
+  /* Smaller illuminated button for job cards */
+  .illuminated-button-sm {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.875rem;
+    width: 120px;
+    box-sizing: border-box;
+    background-color: white !important;
+    border: 2px solid #2575fc !important;
+    color: #2575fc !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+  }
+
+  .illuminated-button-sm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(37, 117, 252, 0.1), transparent);
+    transition: left 0.5s;
+  }
+
+  .illuminated-button-sm:hover {
+    background-color: #f0f8ff !important;
+    border-color: #1861d9 !important;
+    color: #1861d9 !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    transform: translateY(-1px);
+  }
+
+  .illuminated-button-sm:hover::before {
+    left: 100%;
+  }
+
+  .illuminated-button-sm:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   }
 }
