@@ -46,7 +46,11 @@
   80%  { opacity: 1; transform: scale(1) rotate(0deg); }
   100% { opacity: 0; transform: scale(0.8) rotate(5deg); }
 }
-  
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
   .quote-box {
     max-width: 400px;
     text-align: center;
@@ -64,12 +68,14 @@
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 10px;
+    animation: fadeIn 1s ease-out;
   }
+
   
   .quote-sub {
     font-size: 1.2rem;
     opacity: 0.9;
-    
+    animation: fadeIn 1.5s ease-out;
   }
   
   .login-right {
