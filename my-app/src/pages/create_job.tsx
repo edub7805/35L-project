@@ -7,8 +7,11 @@ export default function CreateJob() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
+
   const [jobName, setJobName] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(today);
   const [startTime, setStartTime] = useState("9:00");
   const [endTime, setEndTime] = useState("17:00");
   const [description, setDescription] = useState("");
@@ -61,7 +64,7 @@ export default function CreateJob() {
         <h1 className="form-title">Post a Gig!</h1>
         <form className="form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="jobName">Job Name</label>
+            <label htmlFor="jobName">Job Name*</label>
             <input
               id="jobName"
               type="text"
@@ -112,7 +115,7 @@ export default function CreateJob() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description">Description*</label>
             <textarea
               id="description"
               value={description}
