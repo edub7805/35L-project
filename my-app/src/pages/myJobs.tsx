@@ -192,7 +192,7 @@ export default function MyJobs() {
   return (
     <div className="flex flex-col min-h-screen w-full overflow-x-hidden bg-white font-sans">
       <nav className="flex justify-between items-center px-8 py-4 text-white w-full" style={{ background: 'linear-gradient(90deg, #6a11cb, #2575fc)' }}>
-        <div className="sixxer-logo">Sixxer</div>
+        <div className="sixxer-logo" onClick={() => navigate(`/users/${id}/mainPage`)}>Sixxer</div>
         <div className="nav-buttons">
           <button onClick={() => navigate(-1)} className="nav-button-flush">Back</button>
         </div>
