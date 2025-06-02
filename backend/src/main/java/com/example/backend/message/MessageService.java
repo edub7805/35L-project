@@ -2,7 +2,6 @@ package com.example.backend.message;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -30,21 +29,17 @@ public class MessageService {
             .orElseGet(() -> {
                 Message newConversation = new Message();
                 newConversation.setJobId(jobId);
-                newConversation.setCreatedAt(LocalDateTime.now());
                 newConversation.setMessages(new ArrayList<>());  // Initialize messages list
                 return newConversation;
             });
 
-        // Set message ID and timestamp
+        // Set message ID
         newMessage.setMessageId(UUID.randomUUID().toString());
-        newMessage.setTimestamp(LocalDateTime.now());
 
         // Add message to conversation
         List<Message.MessageContent> messages = conversation.getMessages();
         messages.add(newMessage);
         conversation.setMessages(messages);
-        conversation.setLastMessageAt(LocalDateTime.now());
-        conversation.setUpdatedAt(LocalDateTime.now());
 
         return messageRepository.save(conversation);
     }

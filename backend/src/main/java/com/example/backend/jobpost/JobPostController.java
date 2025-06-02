@@ -72,10 +72,6 @@ public class JobPostController {
         ));
     }
 
-    /**
-     * Create a new job under a given user.
-     * POST /api/users/{userId}/jobs
-     */
     @PostMapping("/users/{userId}/jobs")
     @ResponseStatus(HttpStatus.CREATED)
     public JobPost create(

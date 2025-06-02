@@ -12,16 +12,12 @@ public class Message {
     private String jobId;
     private List<String> participants;
     private List<MessageContent> messages;
-    private LocalDateTime lastMessageAt;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     // Nested class for message content
     public static class MessageContent {
         private String messageId;
         private String senderId;
         private String content;
-        private LocalDateTime timestamp;
 
         // Getters and setters
         public String getMessageId() { return messageId; }
@@ -30,8 +26,6 @@ public class Message {
         public void setSenderId(String senderId) { this.senderId = senderId; }
         public String getContent() { return content; }
         public void setContent(String content) { this.content = content; }
-        public LocalDateTime getTimestamp() { return timestamp; }
-        public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
     }
 
     // Getters and setters for main class
@@ -43,10 +37,4 @@ public class Message {
     public void setParticipants(List<String> participants) { this.participants = participants; }
     public List<MessageContent> getMessages() { return messages; }
     public void setMessages(List<MessageContent> messages) { this.messages = messages; }
-    public LocalDateTime getLastMessageAt() { return lastMessageAt; }
-    public void setLastMessageAt(LocalDateTime lastMessageAt) { this.lastMessageAt = lastMessageAt; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 } 
