@@ -19,7 +19,7 @@ This is a full-stack web application built with React (frontend) and Spring Boot
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/edub7805/35L-project
 cd 35L-project
 ```
 
