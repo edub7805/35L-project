@@ -64,7 +64,7 @@ const UserProfile: React.FC = () => {
         const ratingJson: UserRating = await ratingRes.json();
         setUserRating(ratingJson);
         // Reviews
-        const reviewsRes = await fetch(`http://localhost:8080/api/users/${id}/reviews`);
+        const reviewsRes = await fetch(`http://localhost:8080/api/users/${id}/reviews/received`);
         if (!reviewsRes.ok) throw new Error('Failed to fetch reviews');
         const reviewsJson: Review[] = await reviewsRes.json();
         // Enrich with author names
@@ -150,7 +150,7 @@ const UserProfile: React.FC = () => {
       <div className="profile-section">
         {activeTab === 'reviews' && (
           <div className="reviews-list">
-            <h3>Reviews Given</h3>
+            <h3>Reviews Received</h3>
             {reviews.length === 0 ? (
               <div>No reviews yet.</div>
             ) : (
