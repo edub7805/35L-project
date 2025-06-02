@@ -7,7 +7,7 @@
 
 package com.example.backend.user;
 
-import com.example.backend.user.UserResponse;
+import com.example.backend.UserResponse;
 import com.example.backend.user.User;
 import com.example.backend.user.UserSignupRequest;
 
