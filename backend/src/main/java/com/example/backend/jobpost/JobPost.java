@@ -73,5 +73,4 @@ public class JobPost {
     public void   setRatingSum(int ratingSum) { this.ratingSum = ratingSum; }
     public double getAverageRating() { return averageRating; }
     public void   setAverageRating(double averageRating) { this.averageRating = averageRating; }
-    // constructors, getters/setters...
 }
