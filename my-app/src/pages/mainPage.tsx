@@ -210,8 +210,8 @@ const MainPage: FC = () => {
         {/* Left sidebar - Available Jobs */}
         <aside className="flex flex-col overflow-hidden min-w-[300px] sticky top-16 self-start h-[calc(100vh-4rem)]" style={{ flex: `0 0 ${leftPanelWidth}%` }}>
           {/* Banner with search */}
-          <div className="bg-white px-8 py-4 sticky top-0 z-10 border-b border-gray-300">
-            <h2 className="relative pb-1 mb-2 text-black text-2xl">
+          <div className="bg-white pl-16 pr-8 py-6 sticky top-0 z-10 border-b border-gray-300">
+            <h2 className="relative pb-1 mb-4 text-black text-2xl">
               Available Jobs
               <div className="gradient-accent-line"></div>
             </h2>
@@ -278,9 +278,9 @@ const MainPage: FC = () => {
               <div className="absolute rounded-sm bottom-0 left-1/2 transform -translate-x-1/2 w-10 h-1" style={{ background: 'linear-gradient(90deg, #6a11cb, #2575fc)' }}></div>
             </h2>
             <p className="mb-6 text-black">Ready to post a new job?</p>
-            <button onClick={handleCreatePost} className="illuminated-button">Create Job</button>
+            <button onClick={handleCreatePost} className="illuminated-button" style={{ marginTop: '0rem' }}>Create Job</button>
             
-            <div className="mt-8 pt-6 text-left border-t border-gray-300">
+            <div className="pt- text-left border-t border-gray-300" style={{ marginTop: '1rem' }}>
               <h3 className="text-xl mb-4 text-black text-center">Your Rating</h3>
               {userRating ? (
                 <>

@@ -237,20 +237,24 @@ export default function MyJobs() {
                   <div key={job.id} className={`job-card ${job.status === 'COMPLETED' ? 'opacity-50' : ''}`}>
                     <div className="flex-1">
                       {/* Job Title */}
-                      <div 
-                        className="flex items-center justify-between cursor-pointer mb-3"
-                        onClick={() => toggleExpand(job.id)}
-                      >
+                      <div className="mb-3">
                         <h3 className="text-2xl font-bold text-gray-900 leading-tight">{job.jobName}</h3>
-                        <span className={`text-gray-400 text-xl transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`}>
-                          ▾
-                        </span>
                       </div>
                       
                       {/* Poster Info */}
                       <div className="mb-4">
                         <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Posted by</p>
                         <p className="text-lg font-semibold text-gray-800">{posterNames[job.userId] || job.userId}</p>
+                      </div>
+                      
+                      {/* Dropdown Arrow */}
+                      <div 
+                        className="flex items-center cursor-pointer mb-3"
+                        onClick={() => toggleExpand(job.id)}
+                      >
+                        <span className={`text-gray-400 text-3xl transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`}>
+                          ▾
+                        </span>
                       </div>
                       
                       {isExpanded && (
@@ -288,20 +292,24 @@ export default function MyJobs() {
                   <div key={job.id} className={`job-card ${job.status === 'COMPLETED' ? 'opacity-50' : ''}`}>
                     <div className="flex-1">
                       {/* Job Title */}
-                      <div 
-                        className="flex items-center justify-between cursor-pointer mb-3"
-                        onClick={() => toggleExpand(job.id)}
-                      >
+                      <div className="mb-3">
                         <h3 className="text-2xl font-bold text-gray-900 leading-tight">{job.jobName}</h3>
-                        <span className={`text-gray-400 text-xl transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`}>
-                          ▾
-                        </span>
                       </div>
                       
                       {/* Picker Info */}
                       <div className="mb-4">
                         <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Picked up by</p>
                         <p className="text-lg font-semibold text-gray-800">{pickerNames[job.assignedUserId!] || '—'}</p>
+                      </div>
+                      
+                      {/* Dropdown Arrow */}
+                      <div 
+                        className="flex items-center cursor-pointer mb-3"
+                        onClick={() => toggleExpand(job.id)}
+                      >
+                        <span className={`text-gray-400 text-3xl transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`}>
+                          ▾
+                        </span>
                       </div>
                       
                       {isExpanded && (
