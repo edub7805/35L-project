@@ -21,25 +21,36 @@
 /* job-popup card */
 .job-popup {
   position: absolute;
-  background-color: rgba(113, 182, 226, 0.4);
-  color: #333;
-  padding: 2rem 1rem;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background-color: transparent;
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  box-shadow: none;
   animation: fade 5s forwards;
   pointer-events: none;
   white-space: nowrap;
-  font-size: 0.9rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-shadow: 
+    0 0 5px rgba(255, 255, 255, 0.6),
+    0 0 10px rgba(255, 255, 255, 0.4),
+    0 0 15px rgba(255, 255, 255, 0.3);
+  border: none; /* Remove border */
 }
 
 /* fade in, pause, fade out */
 @keyframes fade {
-  0%   { opacity: 0; transform: scale(0.8); }
-  10%  { opacity: 1; transform: scale(1); }
-  80%  { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(0.8); }
+  0%   { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+  10%  { opacity: 1; transform: scale(1) rotate(0deg); }
+  80%  { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(0.8) rotate(5deg); }
 }
-  
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
   .quote-box {
     max-width: 400px;
     text-align: center;
@@ -57,12 +68,14 @@
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 10px;
+    animation: fadeIn 1s ease-out;
   }
+
   
   .quote-sub {
     font-size: 1.2rem;
     opacity: 0.9;
-    
+    animation: fadeIn 1.5s ease-out;
   }
   
   .login-right {
