@@ -9,6 +9,7 @@ import com.example.backend.jobpost.JobPostStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 @Service
@@ -32,6 +33,25 @@ public class ReviewService {
 
     public List<Review> getReviewsByAuthor(String authorId) {
         return reviewRepo.findByAuthorId(authorId);
+    }
+
+    public List<Review> getReviewsReceivedByUser(String userId) {
+        // find all jobs associated w the user
+        List<JobPost> userJobs = jobRepo.findByUserIdOrAssignedUserId(userId, userId);
+        
+        ArrayList<Review> receivedReviews = new ArrayList<>();
+        
+        for (JobPost job : userJobs) {
+            List<Review> jobReviews = reviewRepo.findByJobId(job.getId());
+            for (Review review : jobReviews) {
+                // only include reviews written by others
+                if (!review.getAuthorId().equals(userId)) {
+                    receivedReviews.add(review);
+                }
+            }
+        }
+        
+        return receivedReviews;
     }
 
     @Transactional

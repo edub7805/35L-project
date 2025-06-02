@@ -80,7 +80,7 @@ const UserStats: React.FC = () => {
         setUserRating(ratingJson);
 
         // 3) Fetch detailed reviews
-        const reviewsRes = await fetch(`http://localhost:8080/api/users/${id}/reviews`);
+        const reviewsRes = await fetch(`http://localhost:8080/api/users/${id}/reviews/received`);
         if (!reviewsRes.ok) throw new Error('Failed to fetch reviews');
         const reviewsJson: Review[] = await reviewsRes.json();
 

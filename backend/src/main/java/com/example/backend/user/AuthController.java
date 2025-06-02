@@ -117,6 +117,22 @@ public class AuthController {
         return ResponseEntity.ok(reviews);
     }
 
+    // Get reviews received by a user
+    @GetMapping("/users/{id}/reviews/received")
+    public ResponseEntity<List<Review>> getUserReceivedReviews(@PathVariable String id) {
+        // Ensure user exists
+        userRepository.findById(id)
+            .orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+                )
+            );
+
+        List<Review> reviews = reviewService.getReviewsReceivedByUser(id);
+        return ResponseEntity.ok(reviews);
+    }
+
 
     // DTO for rating fields
     public static class UserRatingResponse {

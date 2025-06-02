@@ -9,5 +9,6 @@ public interface JobPostRepository extends MongoRepository<JobPost, String> {
     List<JobPost> findByStatus(JobPostStatus status);
     List<JobPost> findByUserIdAndStatusIn(String userId, List<JobPostStatus> statuses);
     List<JobPost> findByAssignedUserIdAndStatusIn(String assignedUserId, List<JobPostStatus> statuses);
+    List<JobPost> findByUserIdOrAssignedUserId(String userId, String assignedUserId);
 }
 
