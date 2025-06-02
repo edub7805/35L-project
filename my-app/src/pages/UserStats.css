@@ -1,10 +1,26 @@
 /* UserStats.css */
 .stats-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: sans-serif;
   color: #000000;
+  background: #f7f9fc;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure the nav bar has no margin or padding at the top */
+.stats-page nav {
+  margin-top: 0;
+  padding-top: 1rem;
+  border-top: none;
+}
+
+.stats-content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* Header */

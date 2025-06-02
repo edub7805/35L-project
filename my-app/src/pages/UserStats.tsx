@@ -147,166 +147,172 @@ const UserStats: React.FC = () => {
 
   return (
     <div className="stats-page">
-      <header className="stats-header">
-        <div className="header-left">
-          <button className="back-button" onClick={handleBackToMain}>
-            ← Back
+      <nav className="flex justify-between items-center py-4 text-white w-full" style={{ background: 'linear-gradient(90deg, #6a11cb, #2575fc)' }}>
+        <div className="sixxer-logo" onClick={() => navigate(`/users/${id}/mainPage`)}>Sixxer</div>
+        <div className="nav-buttons">
+          <button onClick={() => navigate(-1)} className="nav-button-flush">Back</button>
+        </div>
+      </nav>
+
+      <div className="stats-content-container" style={{ padding: '2rem' }}>
+        <header className="stats-header">
+          <div className="header-left">
+            <h1>User Statistics</h1>
+          </div>
+          <div className="user-info">
+            <h2>{userData.name}</h2>
+            <div className="rating-badge">
+              {userRating
+                ? `${userRating.averageRating.toFixed(1)} ★ (${userRating.reviewCount})`
+                : 'No ratings yet'}
+            </div>
+          </div>
+        </header>
+
+        <div className="stats-overview">
+          <div className="stat-card">
+            <div className="stat-number">{jobsPosted.length}</div>
+            <div className="stat-label">Jobs Posted</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{jobsTaken.length}</div>
+            <div className="stat-label">Jobs Taken</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{userRating?.reviewCount || 0}</div>
+            <div className="stat-label">Total Reviews</div>
+          </div>
+        </div>
+
+        <div className="stats-tabs">
+          <button
+            className={activeTab === 'posted' ? 'active' : ''}
+            onClick={() => setActiveTab('posted')}
+          >
+            Jobs Posted
           </button>
-          <h1>User Statistics</h1>
+          <button
+            className={activeTab === 'taken' ? 'active' : ''}
+            onClick={() => setActiveTab('taken')}
+          >
+            Jobs Taken
+          </button>
+          <button
+            className={activeTab === 'reviews' ? 'active' : ''}
+            onClick={() => setActiveTab('reviews')}
+          >
+            Reviews
+          </button>
         </div>
-        <div className="user-info">
-          <h2>{userData.name}</h2>
-          <div className="rating-badge">
-            {userRating
-              ? `${userRating.averageRating.toFixed(1)} ★ (${userRating.reviewCount})`
-              : 'No ratings yet'}
-          </div>
-        </div>
-      </header>
 
-      <div className="stats-overview">
-        <div className="stat-card">
-          <div className="stat-number">{jobsPosted.length}</div>
-          <div className="stat-label">Jobs Posted</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{jobsTaken.length}</div>
-          <div className="stat-label">Jobs Taken</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{userRating?.reviewCount || 0}</div>
-          <div className="stat-label">Total Reviews</div>
-        </div>
-      </div>
-
-      <div className="stats-tabs">
-        <button
-          className={activeTab === 'posted' ? 'active' : ''}
-          onClick={() => setActiveTab('posted')}
-        >
-          Jobs Posted
-        </button>
-        <button
-          className={activeTab === 'taken' ? 'active' : ''}
-          onClick={() => setActiveTab('taken')}
-        >
-          Jobs Taken
-        </button>
-        <button
-          className={activeTab === 'reviews' ? 'active' : ''}
-          onClick={() => setActiveTab('reviews')}
-        >
-          Reviews
-        </button>
-      </div>
-
-      <div className="stats-content">
-        {activeTab === 'posted' && (
-          <div className="jobs-list">
-            <h3>Jobs You've Posted</h3>
-            <table className="stats-table">
-              <thead>
-                <tr>
-                  <th>Job Title</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Status</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {jobsPosted.map(job => (
-                  <tr key={job.id}>
-                    <td>{job.jobName}</td>
-                    <td>{new Date(job.date).toLocaleDateString()}</td>
-                    <td>{`${job.startTime} - ${job.endTime}`}</td>
-                    <td>
-                      <span className={`status-badge ${job.status.toLowerCase()}`}>
-                        {job.status === 'COMPLETED' ? 'Completed' : //conditionals in html is absolutely foul
-                         job.status === 'IN_PROGRESS' ? 'In Progress' :
-                                                         'Open'}
-                      </span>
-                    </td>
-                    <td>{job.description}</td>
+        <div className="stats-content">
+          {activeTab === 'posted' && (
+            <div className="jobs-list">
+              <h3>Jobs You've Posted</h3>
+              <table className="stats-table">
+                <thead>
+                  <tr>
+                    <th>Job Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Description</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {activeTab === 'taken' && (
-          <div className="jobs-list">
-            <h3>Jobs You've Taken</h3>
-            <table className="stats-table">
-              <thead>
-                <tr>
-                  <th>Job Title</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Status</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {jobsTaken.map(job => (
-                  <tr key={job.id}>
-                    <td>{job.jobName}</td>
-                    <td>{new Date(job.date).toLocaleDateString()}</td>
-                    <td>{`${job.startTime} - ${job.endTime}`}</td>
-                    <td>
-                      <span className={`status-badge ${job.status.toLowerCase()}`}>
-                        {job.status === 'COMPLETED' ? 'Completed' : //conditionals in html is absolutely foul
-                         job.status === 'IN_PROGRESS' ? 'In Progress' :
-                                                         'Open'}
-                      </span>
-                    </td>
-                    <td>{job.description}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {activeTab === 'reviews' && (
-          <div className="reviews-list">
-            <h3>Reviews Received</h3>
-            <div className="reviews-summary">
-              <p>
-                <strong>Average Rating:</strong>{' '}
-                {userRating ? userRating.averageRating.toFixed(1) : '0.0'} ★
-              </p>
-              <p>
-                <strong>Total Reviews:</strong>{' '}
-                {userRating?.reviewCount || 0}
-              </p>
+                </thead>
+                <tbody>
+                  {jobsPosted.map(job => (
+                    <tr key={job.id}>
+                      <td>{job.jobName}</td>
+                      <td>{new Date(job.date).toLocaleDateString()}</td>
+                      <td>{`${job.startTime} - ${job.endTime}`}</td>
+                      <td>
+                        <span className={`status-badge ${job.status.toLowerCase()}`}>
+                          {job.status === 'COMPLETED' ? 'Completed' : //conditionals in html is absolutely foul
+                           job.status === 'IN_PROGRESS' ? 'In Progress' :
+                                                           'Open'}
+                        </span>
+                      </td>
+                      <td>{job.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div className="reviews-grid">
-              {reviews.length ? (
-                reviews.map(review => (
-                  <div key={review.id} className="review-card">
-                    <div className="review-header">
-                      <div className="review-author">
-                        <strong>{review.authorName}</strong>
+          )}
+
+          {activeTab === 'taken' && (
+            <div className="jobs-list">
+              <h3>Jobs You've Taken</h3>
+              <table className="stats-table">
+                <thead>
+                  <tr>
+                    <th>Job Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {jobsTaken.map(job => (
+                    <tr key={job.id}>
+                      <td>{job.jobName}</td>
+                      <td>{new Date(job.date).toLocaleDateString()}</td>
+                      <td>{`${job.startTime} - ${job.endTime}`}</td>
+                      <td>
+                        <span className={`status-badge ${job.status.toLowerCase()}`}>
+                          {job.status === 'COMPLETED' ? 'Completed' : //conditionals in html is absolutely foul
+                           job.status === 'IN_PROGRESS' ? 'In Progress' :
+                                                           'Open'}
+                        </span>
+                      </td>
+                      <td>{job.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === 'reviews' && (
+            <div className="reviews-list">
+              <h3>Reviews Received</h3>
+              <div className="reviews-summary">
+                <p>
+                  <strong>Average Rating:</strong>{' '}
+                  {userRating ? userRating.averageRating.toFixed(1) : '0.0'} ★
+                </p>
+                <p>
+                  <strong>Total Reviews:</strong>{' '}
+                  {userRating?.reviewCount || 0}
+                </p>
+              </div>
+              <div className="reviews-grid">
+                {reviews.length ? (
+                  reviews.map(review => (
+                    <div key={review.id} className="review-card">
+                      <div className="review-header">
+                        <div className="review-author">
+                          <strong>{review.authorName}</strong>
+                        </div>
+                        <div className="review-rating">
+                          {'★'.repeat(review.rating)}
+                          {'☆'.repeat(5 - review.rating)}
+                        </div>
+                        <div className="review-date">
+                          {new Date(review.createdAt).toLocaleDateString()}
+                        </div>
                       </div>
-                      <div className="review-rating">
-                        {'★'.repeat(review.rating)}
-                        {'☆'.repeat(5 - review.rating)}
-                      </div>
-                      <div className="review-date">
-                        {new Date(review.createdAt).toLocaleDateString()}
-                      </div>
+                      <p className="review-text">{review.text}</p>
                     </div>
-                    <p className="review-text">{review.text}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No reviews yet.</p>
-              )}
+                  ))
+                ) : (
+                  <p>No reviews yet.</p>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

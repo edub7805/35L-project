@@ -196,9 +196,9 @@ const MainPage: FC = () => {
   return (
     <div className="flex flex-col min-h-screen w-full overflow-x-hidden bg-white font-sans">
       {/* Navigation with gradient background */}
-      <nav className="flex justify-between items-center px-8 py-4 text-white w-full" style={{ background: 'linear-gradient(90deg, #6a11cb, #2575fc)' }}>
-        <div className="sixxer-logo">Sixxer</div>
-        <div className="flex gap-2">
+      <nav className="flex justify-between items-center py-4 text-white w-full" style={{ background: 'linear-gradient(90deg, #6a11cb, #2575fc)' }}>
+        <div className="sixxer-logo" onClick={() => navigate(`/users/${id}/mainPage`)}>Sixxer</div>
+        <div className="nav-buttons">
           <button onClick={handleMyJobs} className="nav-button-flush">My Jobs</button>
           <button onClick={handleUserStats} className="nav-button-flush">Statistics</button>
           <button onClick={handleCreatePost} className="nav-button-flush">+ Create Job</button>
