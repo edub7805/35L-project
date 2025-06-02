@@ -11,11 +11,26 @@ type Job = {
 
 export default function Login() {
   const placeholders = ['SIXXER'];
-
+  
+  // list of catchphrases
+  const catchphrases = [
+    "Release your tension",
+    "Let others handle the work",
+    "Relax while tasks get done",
+    "Delegate and unwind",
+    "Your time is precious",
+    "Sit back and breathe",
+    "Outsource your stress",
+    "Find your peace",
+    "Let go of the burden",
+    "Others work, you relax"
+  ];
+    
   const [jobs, setJobs] = useState<Job[]>([]);
   const [nextIdx, setNextIdx] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [catchphrase, setCatchphrase] = useState("");
 
   // refs for measuring
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,6 +38,11 @@ export default function Login() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Select a random catchphrase
+    const randomIndex = Math.floor(Math.random() * catchphrases.length);
+    setCatchphrase(catchphrases[randomIndex]);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -126,7 +146,7 @@ export default function Login() {
       <div className="login-left" ref={containerRef}>
         <div className="quote-box" ref={quoteRef}>
           <p className="quote-label">Sixxer®</p>
-          <h2 className="quote-title">Release your tension</h2>
+          <h2 className="quote-title">{catchphrase}</h2>
           <p className="quote-sub">You worked hard didn't you</p>
         </div>
 
