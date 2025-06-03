@@ -43,6 +43,8 @@ npm run dev
 
 The frontend development server will start on `http://localhost:5173`
 
+We recommend using VS Code to start the backend and your local terminal to start the frontend.
+
 ## Technologies Used
 
 ### Frontend
