@@ -360,16 +360,18 @@ export default function MyJobs() {
           }}
         >
           <div 
-            className="bg-white rounded-lg p-6 mx-4 flex flex-col" 
+            className="bg-white rounded-lg shadow-xl mx-4 flex flex-col"
             onClick={e => e.stopPropagation()}
             style={{ 
               width: '600px',
+              height: '500px',
               maxWidth: '90vw',
-              maxHeight: '80vh'
+              maxHeight: '80vh',
+              border: '2px solid #2575fc'
             }}
           >
             <h2 className="text-2xl font-bold mb-4 text-gray-900">Conversation</h2>
-            <div className="flex-1 overflow-y-auto border border-gray-300 rounded p-4 mb-4 bg-gray-50">
+            <div className="flex-1 overflow-y-auto border rounded p-4 mb-4 bg-gray-50" style={{ borderColor: '#2575fc', borderWidth: '1px' }}>
               {messages.length === 0 ? (
                 <p className="text-gray-600">No messages yet.</p>
               ) : (
