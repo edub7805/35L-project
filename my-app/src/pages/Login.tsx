@@ -145,7 +145,7 @@ export default function Login() {
     <div className="login-container">
       <div className="login-left" ref={containerRef}>
         <div className="quote-box" ref={quoteRef}>
-          <p className="quote-label">Sixxer®</p>
+          <p className="quote-label">Sixxer</p>
           <h2 className="quote-title">{catchphrase}</h2>
           <p className="quote-sub">For students by students</p>
         </div>
