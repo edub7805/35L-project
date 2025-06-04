@@ -535,10 +535,12 @@ body, html, #root {
 /* Ensure nav bars have no top margin/padding */
 nav {
   margin-top: 0 !important;
-  padding-top: 1rem !important;
   border-top: none !important;
-  padding-left: 0 !important; /* Remove default left padding */
   position: relative; /* For absolute positioning of logo */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important; /* Center the nav-buttons since logo is absolute */
+  padding: 1rem 0 !important; /* Only vertical padding */
 }
 
 /* Sixxer logo styling with specific positioning */
