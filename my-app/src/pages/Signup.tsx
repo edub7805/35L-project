@@ -36,7 +36,7 @@ export default function SignUp() {
 
       await response.json(); // Just await the response without storing it
       // Redirect to login page instead of main page
-      alert('Signup successful! Please login with your credentials.');
+      //alert('Signup successful! Please login with your credentials.');
       navigate('/login');
 
     } catch (error) {
