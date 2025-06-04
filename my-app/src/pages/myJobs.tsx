@@ -416,7 +416,8 @@ export default function MyJobs() {
             onClick={e => e.stopPropagation()}
             style={{ 
               width: '400px',
-              maxWidth: '90vw'
+              maxWidth: '90vw',
+              border: '2px solid #2575fc'
             }}
           >
             <h2 className="text-2xl font-bold mb-6 text-gray-900 text-center">How did they do?</h2>
