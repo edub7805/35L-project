@@ -1,4 +1,4 @@
-package com.example.backend;
+package com.example.backend.user;
 import com.example.backend.user.User;
 public class UserResponse {
     private String id;
