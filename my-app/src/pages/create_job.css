@@ -15,7 +15,7 @@
 .createjob-background {
   position: absolute;
   inset: 0;
-  background: url('/SIXXER-2.png') repeat;
+  background: url('/SIXXER-4.png') repeat;
   background-size: 100%;
   opacity: .2; /* Controls the background image transparency */
   z-index: 0;

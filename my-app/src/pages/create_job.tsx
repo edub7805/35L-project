@@ -61,6 +61,13 @@ export default function CreateJob() {
     <div className="createjob-wrapper">
       <div className="createjob-background"></div>
       <div className="createjob-overlay">
+        <button
+          className="back-button"
+          style={{ alignSelf: 'flex-start', margin: '0 0 1rem 0' }}
+          onClick={() => navigate(`/users/${id}/mainPage`)}
+        >
+          ← Back
+        </button>
         <h1 className="form-title">Post a Gig!</h1>
         <form className="form" onSubmit={handleSubmit}>
           <div className="form-group">
