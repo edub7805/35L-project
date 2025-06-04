@@ -147,7 +147,7 @@ export default function Login() {
         <div className="quote-box" ref={quoteRef}>
           <p className="quote-label">Sixxer®</p>
           <h2 className="quote-title">{catchphrase}</h2>
-          <p className="quote-sub">You worked hard didn't you</p>
+          <p className="quote-sub">For students by students</p>
         </div>
 
         {jobs.map(({ id, text, top, left }) => (
